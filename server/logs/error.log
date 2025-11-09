@@ -1,0 +1,71 @@
+2025-11-02 17:51:45 [ERROR]: Erreur envoi email bienvenue: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials 5b1f17b1804b1-4772fabe202sm69419485e9.0 - gsmtp
+2025-11-02 17:51:45 [ERROR]: Erreur envoi email bienvenue: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials 5b1f17b1804b1-4772fabe202sm69419485e9.0 - gsmtp
+2025-11-07 11:50:30 [ERROR]: ❌ Erreur de connexion MongoDB: Could not connect to any servers in your MongoDB Atlas cluster. One common reason is that you're trying to access the database from an IP that isn't whitelisted. Make sure your current IP address is on your Atlas cluster's IP whitelist: https://www.mongodb.com/docs/atlas/security-whitelist/
+2025-11-07 12:10:02 [ERROR]: Erreur envoi email bienvenue: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials ffacd0b85a97d-42ac679d544sm4986235f8f.46 - gsmtp
+2025-11-07 12:10:02 [ERROR]: Erreur envoi email bienvenue: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials ffacd0b85a97d-42ac679d544sm4986235f8f.46 - gsmtp
+2025-11-09 00:03:46 [ERROR]: Quote validation failed: quoteNumber: Path `quoteNumber` is required.
+ValidationError: Quote validation failed: quoteNumber: Path `quoteNumber` is required.
+    at Document.invalidate (C:\Users\HP\Documents\project\server\node_modules\mongoose\lib\document.js:3362:32)
+    at C:\Users\HP\Documents\project\server\node_modules\mongoose\lib\document.js:3123:17
+    at C:\Users\HP\Documents\project\server\node_modules\mongoose\lib\schemaType.js:1420:9
+    at process.processTicksAndRejections (node:internal/process/task_queues:85:11)
+2025-11-09 00:04:57 [ERROR]: Quote validation failed: quoteNumber: Path `quoteNumber` is required.
+ValidationError: Quote validation failed: quoteNumber: Path `quoteNumber` is required.
+    at Document.invalidate (C:\Users\HP\Documents\project\server\node_modules\mongoose\lib\document.js:3362:32)
+    at C:\Users\HP\Documents\project\server\node_modules\mongoose\lib\document.js:3123:17
+    at C:\Users\HP\Documents\project\server\node_modules\mongoose\lib\schemaType.js:1420:9
+    at process.processTicksAndRejections (node:internal/process/task_queues:85:11)
+2025-11-09 00:31:49 [ERROR]: emailService.sendQuoteConfirmation is not a function
+TypeError: emailService.sendQuoteConfirmation is not a function
+    at createQuote (file:///C:/Users/HP/Documents/project/server/src/controllers/quoteController.js:46:18)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-09 00:31:53 [ERROR]: emailService.sendQuoteConfirmation is not a function
+TypeError: emailService.sendQuoteConfirmation is not a function
+    at createQuote (file:///C:/Users/HP/Documents/project/server/src/controllers/quoteController.js:46:18)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-09 00:31:58 [ERROR]: emailService.sendQuoteConfirmation is not a function
+TypeError: emailService.sendQuoteConfirmation is not a function
+    at createQuote (file:///C:/Users/HP/Documents/project/server/src/controllers/quoteController.js:46:18)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-09 00:39:13 [ERROR]: emailService.sendQuoteConfirmation is not a function
+TypeError: emailService.sendQuoteConfirmation is not a function
+    at createQuote (file:///C:/Users/HP/Documents/project/server/src/controllers/quoteController.js:48:18)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-09 00:41:29 [ERROR]: emailService.sendQuoteConfirmation is not a function
+TypeError: emailService.sendQuoteConfirmation is not a function
+    at createQuote (file:///C:/Users/HP/Documents/project/server/src/controllers/quoteController.js:48:18)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-09 00:46:43 [ERROR]: Erreur d'envoi de confirmation devis à omar.houch20@gmail.com: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials 5b1f17b1804b1-47763b5714dsm83223525e9.0 - gsmtp
+2025-11-09 00:46:43 [ERROR]: Erreur d'envoi de notification admin: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials 5b1f17b1804b1-47778daf2c3sm13708755e9.10 - gsmtp
+2025-11-09 00:56:25 [ERROR]: Erreur d'envoi de confirmation devis à omarhouch20@gmail.com: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials ffacd0b85a97d-42b380a3a30sm85053f8f.4 - gsmtp
+2025-11-09 00:56:26 [ERROR]: Erreur d'envoi de notification admin: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials 5b1f17b1804b1-4776bcfd021sm159262175e9.11 - gsmtp
+2025-11-09 01:04:06 [ERROR]: Erreur d'envoi de confirmation devis à ramoagency@gmail.com: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials 5b1f17b1804b1-4775ce210a7sm249626165e9.12 - gsmtp
+2025-11-09 01:04:06 [ERROR]: Erreur d'envoi de notification admin: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials 5b1f17b1804b1-47778daf2c3sm14269295e9.10 - gsmtp
+2025-11-09 01:04:46 [ERROR]: Erreur d'envoi de confirmation devis à omarhouch20@gmail.com: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials ffacd0b85a97d-42b2dd927d5sm7097334f8f.24 - gsmtp
+2025-11-09 01:04:46 [ERROR]: Erreur d'envoi de notification admin: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials ffacd0b85a97d-42b2e9644fbsm6096670f8f.25 - gsmtp
+2025-11-09 01:05:18 [ERROR]: Erreur d'envoi de confirmation devis à omarhouch20@gmail.com: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials ffacd0b85a97d-42b2c6d3f67sm7842439f8f.37 - gsmtp
+2025-11-09 01:05:19 [ERROR]: Erreur d'envoi de notification admin: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials ffacd0b85a97d-42abe62bf40sm13552190f8f.9 - gsmtp
+2025-11-09 01:16:28 [ERROR]: Erreur d'envoi de confirmation devis à omarhouch20@gmail.com: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials 5b1f17b1804b1-4776bcd521fsm152317205e9.6 - gsmtp
+2025-11-09 01:16:28 [ERROR]: Erreur d'envoi de notification admin: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials ffacd0b85a97d-42b2ee2ed31sm6568596f8f.29 - gsmtp
+2025-11-09 01:17:06 [ERROR]: Erreur lors de l'envoi de l'email de bienvenue à demo@trading.com: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials 5b1f17b1804b1-4776bccd35asm123147825e9.1 - gsmtp
+2025-11-09 01:24:05 [ERROR]: Erreur d'envoi de confirmation devis à omarhouch20@gmail.com: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials ffacd0b85a97d-42abe62b23csm13758182f8f.10 - gsmtp
+2025-11-09 01:24:05 [ERROR]: Erreur d'envoi de notification admin: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials 5b1f17b1804b1-47775e9c6c7sm25056815e9.2 - gsmtp

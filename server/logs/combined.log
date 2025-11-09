@@ -1,0 +1,334 @@
+2025-11-02 17:43:22 [INFO]: Dossier créé: uploads/temp
+2025-11-02 17:43:22 [INFO]: Dossier créé: uploads/invoices
+2025-11-02 17:43:22 [INFO]: Dossier créé: uploads/quotes
+2025-11-02 17:43:22 [INFO]: Dossier créé: uploads/projects
+2025-11-02 17:43:22 [INFO]: 🚀 Serveur démarré sur le port 5000 en mode development
+2025-11-02 17:43:22 [INFO]: 📍 URL: http://localhost:5000
+2025-11-02 17:43:22 [INFO]: 🔗 API: http://localhost:5000/api
+2025-11-02 17:43:23 [INFO]: ✅ MongoDB connecté: ac-ergtame-shard-00-01.dnnot1m.mongodb.net
+2025-11-02 17:43:23 [INFO]: 📊 Base de données: test
+2025-11-02 17:51:45 [ERROR]: Erreur envoi email bienvenue: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials 5b1f17b1804b1-4772fabe202sm69419485e9.0 - gsmtp
+2025-11-02 17:51:45 [ERROR]: Erreur envoi email bienvenue: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials 5b1f17b1804b1-4772fabe202sm69419485e9.0 - gsmtp
+2025-11-02 20:19:37 [WARN]: ⚠️  MongoDB déconnecté
+2025-11-02 20:19:37 [INFO]: 🔄 MongoDB reconnecté
+2025-11-02 20:20:32 [INFO]: 🚀 Serveur démarré sur le port 5000 en mode development
+2025-11-02 20:20:32 [INFO]: 📍 URL: http://localhost:5000
+2025-11-02 20:20:32 [INFO]: 🔗 API: http://localhost:5000/api
+2025-11-02 20:20:33 [INFO]: ✅ MongoDB connecté: ac-ergtame-shard-00-00.dnnot1m.mongodb.net
+2025-11-02 20:20:33 [INFO]: 📊 Base de données: test
+2025-11-02 20:20:49 [INFO]: 🚀 Serveur démarré sur le port 5000 en mode development
+2025-11-02 20:20:49 [INFO]: 📍 URL: http://localhost:5000
+2025-11-02 20:20:49 [INFO]: 🔗 API: http://localhost:5000/api
+2025-11-02 20:20:50 [INFO]: ✅ MongoDB connecté: ac-ergtame-shard-00-02.dnnot1m.mongodb.net
+2025-11-02 20:20:50 [INFO]: 📊 Base de données: test
+2025-11-02 22:21:18 [WARN]: ⚠️  MongoDB déconnecté
+2025-11-02 22:21:18 [INFO]: 🔄 MongoDB reconnecté
+2025-11-03 00:03:37 [WARN]: ⚠️  MongoDB déconnecté
+2025-11-03 00:03:38 [INFO]: 🔄 MongoDB reconnecté
+2025-11-03 00:59:58 [WARN]: ⚠️  MongoDB déconnecté
+2025-11-07 11:50:00 [INFO]: 🚀 Serveur démarré sur le port 5000 en mode development
+2025-11-07 11:50:00 [INFO]: 📍 URL: http://localhost:5000
+2025-11-07 11:50:00 [INFO]: 🔗 API: http://localhost:5000/api
+2025-11-07 11:50:30 [ERROR]: ❌ Erreur de connexion MongoDB: Could not connect to any servers in your MongoDB Atlas cluster. One common reason is that you're trying to access the database from an IP that isn't whitelisted. Make sure your current IP address is on your Atlas cluster's IP whitelist: https://www.mongodb.com/docs/atlas/security-whitelist/
+2025-11-07 12:07:00 [INFO]: 🚀 Serveur démarré sur le port 5000 en mode development
+2025-11-07 12:07:00 [INFO]: 📍 URL: http://localhost:5000
+2025-11-07 12:07:00 [INFO]: 🔗 API: http://localhost:5000/api
+2025-11-07 12:07:02 [INFO]: ✅ MongoDB connecté: ac-ergtame-shard-00-02.dnnot1m.mongodb.net
+2025-11-07 12:07:02 [INFO]: 📊 Base de données: test
+2025-11-07 12:07:13 [INFO]: 🚀 Serveur démarré sur le port 5000 en mode development
+2025-11-07 12:07:13 [INFO]: 📍 URL: http://localhost:5000
+2025-11-07 12:07:13 [INFO]: 🔗 API: http://localhost:5000/api
+2025-11-07 12:07:13 [INFO]: ✅ MongoDB connecté: ac-ergtame-shard-00-00.dnnot1m.mongodb.net
+2025-11-07 12:07:13 [INFO]: 📊 Base de données: test
+2025-11-07 12:10:02 [ERROR]: Erreur envoi email bienvenue: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials ffacd0b85a97d-42ac679d544sm4986235f8f.46 - gsmtp
+2025-11-07 12:10:02 [ERROR]: Erreur envoi email bienvenue: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials ffacd0b85a97d-42ac679d544sm4986235f8f.46 - gsmtp
+2025-11-07 12:34:08 [WARN]: ⚠️  MongoDB déconnecté
+2025-11-07 12:34:09 [INFO]: 🔄 MongoDB reconnecté
+2025-11-07 12:34:10 [WARN]: ⚠️  MongoDB déconnecté
+2025-11-07 12:34:12 [INFO]: 🔄 MongoDB reconnecté
+2025-11-07 22:54:36 [INFO]: 🚀 Serveur démarré sur le port 5000 en mode development
+2025-11-07 22:54:36 [INFO]: 📍 URL: http://localhost:5000
+2025-11-07 22:54:36 [INFO]: 🔗 API: http://localhost:5000/api
+2025-11-07 22:54:37 [INFO]: ✅ MongoDB connecté: ac-ergtame-shard-00-00.dnnot1m.mongodb.net
+2025-11-07 22:54:37 [INFO]: 📊 Base de données: test
+2025-11-07 23:29:47 [WARN]: ⚠️  MongoDB déconnecté
+2025-11-07 23:29:57 [INFO]: 🔄 MongoDB reconnecté
+2025-11-08 01:07:41 [INFO]: 🚀 Serveur démarré sur le port 5000 en mode development
+2025-11-08 01:07:41 [INFO]: 📍 URL: http://localhost:5000
+2025-11-08 01:07:41 [INFO]: 🔗 API: http://localhost:5000/api
+2025-11-08 01:07:42 [INFO]: ✅ MongoDB connecté: ac-ergtame-shard-00-01.dnnot1m.mongodb.net
+2025-11-08 01:07:42 [INFO]: 📊 Base de données: test
+2025-11-08 19:18:33 [INFO]: 🚀 Serveur démarré sur le port 5000 en mode development
+2025-11-08 19:18:33 [INFO]: 📍 URL: http://localhost:5000
+2025-11-08 19:18:33 [INFO]: 🔗 API: http://localhost:5000/api
+2025-11-08 19:18:34 [INFO]: ✅ MongoDB connecté: ac-ergtame-shard-00-00.dnnot1m.mongodb.net
+2025-11-08 19:18:34 [INFO]: 📊 Base de données: test
+2025-11-08 19:32:32 [WARN]: ⚠️  MongoDB déconnecté
+2025-11-08 19:32:32 [INFO]: 🔄 MongoDB reconnecté
+2025-11-08 19:51:10 [INFO]: 🚀 Serveur démarré sur le port 5000 en mode development
+2025-11-08 19:51:10 [INFO]: 📍 URL: http://localhost:5000
+2025-11-08 19:51:10 [INFO]: 🔗 API: http://localhost:5000/api
+2025-11-08 19:51:11 [INFO]: ✅ MongoDB connecté: ac-ergtame-shard-00-01.dnnot1m.mongodb.net
+2025-11-08 19:51:11 [INFO]: 📊 Base de données: test
+2025-11-08 19:52:55 [INFO]: 🚀 Serveur démarré sur le port 5000 en mode development
+2025-11-08 19:52:55 [INFO]: 📍 URL: http://localhost:5000
+2025-11-08 19:52:55 [INFO]: 🔗 API: http://localhost:5000/api
+2025-11-08 19:52:55 [INFO]: ✅ MongoDB connecté: ac-ergtame-shard-00-00.dnnot1m.mongodb.net
+2025-11-08 19:52:55 [INFO]: 📊 Base de données: test
+2025-11-08 20:40:18 [WARN]: ⚠️  MongoDB déconnecté
+2025-11-08 20:40:19 [INFO]: 🔄 MongoDB reconnecté
+2025-11-08 21:51:05 [WARN]: ⚠️  MongoDB déconnecté
+2025-11-08 21:51:06 [INFO]: 🔄 MongoDB reconnecté
+2025-11-08 22:35:31 [WARN]: ⚠️  MongoDB déconnecté
+2025-11-08 22:35:31 [INFO]: 🔄 MongoDB reconnecté
+2025-11-08 22:46:52 [WARN]: ⚠️  MongoDB déconnecté
+2025-11-08 22:46:52 [INFO]: 🔄 MongoDB reconnecté
+2025-11-09 00:02:00 [INFO]: 🚀 Serveur démarré sur le port 5000 en mode development
+2025-11-09 00:02:00 [INFO]: 📍 URL: http://localhost:5000
+2025-11-09 00:02:00 [INFO]: 🔗 API: http://localhost:5000/api
+2025-11-09 00:02:00 [INFO]: ✅ MongoDB connecté: ac-ergtame-shard-00-01.dnnot1m.mongodb.net
+2025-11-09 00:02:00 [INFO]: 📊 Base de données: test
+2025-11-09 00:02:22 [INFO]: 🚀 Serveur démarré sur le port 5000 en mode development
+2025-11-09 00:02:22 [INFO]: 📍 URL: http://localhost:5000
+2025-11-09 00:02:22 [INFO]: 🔗 API: http://localhost:5000/api
+2025-11-09 00:02:23 [INFO]: ✅ MongoDB connecté: ac-ergtame-shard-00-00.dnnot1m.mongodb.net
+2025-11-09 00:02:23 [INFO]: 📊 Base de données: test
+2025-11-09 00:02:49 [INFO]: 🚀 Serveur démarré sur le port 5000 en mode development
+2025-11-09 00:02:49 [INFO]: 📍 URL: http://localhost:5000
+2025-11-09 00:02:49 [INFO]: 🔗 API: http://localhost:5000/api
+2025-11-09 00:02:49 [INFO]: ✅ MongoDB connecté: ac-ergtame-shard-00-01.dnnot1m.mongodb.net
+2025-11-09 00:02:49 [INFO]: 📊 Base de données: test
+2025-11-09 00:03:03 [INFO]: 🚀 Serveur démarré sur le port 5000 en mode development
+2025-11-09 00:03:03 [INFO]: 📍 URL: http://localhost:5000
+2025-11-09 00:03:03 [INFO]: 🔗 API: http://localhost:5000/api
+2025-11-09 00:03:04 [INFO]: ✅ MongoDB connecté: ac-ergtame-shard-00-02.dnnot1m.mongodb.net
+2025-11-09 00:03:04 [INFO]: 📊 Base de données: test
+2025-11-09 00:03:14 [INFO]: 🚀 Serveur démarré sur le port 5000 en mode development
+2025-11-09 00:03:14 [INFO]: 📍 URL: http://localhost:5000
+2025-11-09 00:03:14 [INFO]: 🔗 API: http://localhost:5000/api
+2025-11-09 00:03:15 [INFO]: ✅ MongoDB connecté: ac-ergtame-shard-00-01.dnnot1m.mongodb.net
+2025-11-09 00:03:15 [INFO]: 📊 Base de données: test
+2025-11-09 00:03:46 [ERROR]: Quote validation failed: quoteNumber: Path `quoteNumber` is required.
+ValidationError: Quote validation failed: quoteNumber: Path `quoteNumber` is required.
+    at Document.invalidate (C:\Users\HP\Documents\project\server\node_modules\mongoose\lib\document.js:3362:32)
+    at C:\Users\HP\Documents\project\server\node_modules\mongoose\lib\document.js:3123:17
+    at C:\Users\HP\Documents\project\server\node_modules\mongoose\lib\schemaType.js:1420:9
+    at process.processTicksAndRejections (node:internal/process/task_queues:85:11)
+2025-11-09 00:04:57 [ERROR]: Quote validation failed: quoteNumber: Path `quoteNumber` is required.
+ValidationError: Quote validation failed: quoteNumber: Path `quoteNumber` is required.
+    at Document.invalidate (C:\Users\HP\Documents\project\server\node_modules\mongoose\lib\document.js:3362:32)
+    at C:\Users\HP\Documents\project\server\node_modules\mongoose\lib\document.js:3123:17
+    at C:\Users\HP\Documents\project\server\node_modules\mongoose\lib\schemaType.js:1420:9
+    at process.processTicksAndRejections (node:internal/process/task_queues:85:11)
+2025-11-09 00:06:30 [INFO]: 🚀 Serveur démarré sur le port 5000 en mode development
+2025-11-09 00:06:30 [INFO]: 📍 URL: http://localhost:5000
+2025-11-09 00:06:30 [INFO]: 🔗 API: http://localhost:5000/api
+2025-11-09 00:06:31 [INFO]: ✅ MongoDB connecté: ac-ergtame-shard-00-01.dnnot1m.mongodb.net
+2025-11-09 00:06:31 [INFO]: 📊 Base de données: test
+2025-11-09 00:06:48 [INFO]: 🚀 Serveur démarré sur le port 5000 en mode development
+2025-11-09 00:06:48 [INFO]: 📍 URL: http://localhost:5000
+2025-11-09 00:06:48 [INFO]: 🔗 API: http://localhost:5000/api
+2025-11-09 00:06:49 [INFO]: ✅ MongoDB connecté: ac-ergtame-shard-00-00.dnnot1m.mongodb.net
+2025-11-09 00:06:49 [INFO]: 📊 Base de données: test
+2025-11-09 00:07:00 [INFO]: 🚀 Serveur démarré sur le port 5000 en mode development
+2025-11-09 00:07:00 [INFO]: 📍 URL: http://localhost:5000
+2025-11-09 00:07:00 [INFO]: 🔗 API: http://localhost:5000/api
+2025-11-09 00:07:00 [INFO]: ✅ MongoDB connecté: ac-ergtame-shard-00-01.dnnot1m.mongodb.net
+2025-11-09 00:07:00 [INFO]: 📊 Base de données: test
+2025-11-09 00:15:07 [INFO]: 🚀 Serveur démarré sur le port 5000 en mode development
+2025-11-09 00:15:07 [INFO]: 📍 URL: http://localhost:5000
+2025-11-09 00:15:07 [INFO]: 🔗 API: http://localhost:5000/api
+2025-11-09 00:15:07 [INFO]: ✅ MongoDB connecté: ac-ergtame-shard-00-01.dnnot1m.mongodb.net
+2025-11-09 00:15:07 [INFO]: 📊 Base de données: test
+2025-11-09 00:15:19 [INFO]: 🚀 Serveur démarré sur le port 5000 en mode development
+2025-11-09 00:15:19 [INFO]: 📍 URL: http://localhost:5000
+2025-11-09 00:15:19 [INFO]: 🔗 API: http://localhost:5000/api
+2025-11-09 00:15:19 [INFO]: ✅ MongoDB connecté: ac-ergtame-shard-00-00.dnnot1m.mongodb.net
+2025-11-09 00:15:19 [INFO]: 📊 Base de données: test
+2025-11-09 00:20:11 [INFO]: 🚀 Serveur démarré sur le port 5000 en mode development
+2025-11-09 00:20:11 [INFO]: 📍 URL: http://localhost:5000
+2025-11-09 00:20:11 [INFO]: 🔗 API: http://localhost:5000/api
+2025-11-09 00:20:12 [INFO]: ✅ MongoDB connecté: ac-ergtame-shard-00-02.dnnot1m.mongodb.net
+2025-11-09 00:20:12 [INFO]: 📊 Base de données: test
+2025-11-09 00:23:04 [INFO]: 🚀 Serveur démarré sur le port 5000 en mode development
+2025-11-09 00:23:04 [INFO]: 📍 URL: http://localhost:5000
+2025-11-09 00:23:04 [INFO]: 🔗 API: http://localhost:5000/api
+2025-11-09 00:23:05 [INFO]: ✅ MongoDB connecté: ac-ergtame-shard-00-00.dnnot1m.mongodb.net
+2025-11-09 00:23:05 [INFO]: 📊 Base de données: test
+2025-11-09 00:23:09 [INFO]: 🚀 Serveur démarré sur le port 5000 en mode development
+2025-11-09 00:23:09 [INFO]: 📍 URL: http://localhost:5000
+2025-11-09 00:23:09 [INFO]: 🔗 API: http://localhost:5000/api
+2025-11-09 00:23:09 [INFO]: ✅ MongoDB connecté: ac-ergtame-shard-00-02.dnnot1m.mongodb.net
+2025-11-09 00:23:09 [INFO]: 📊 Base de données: test
+2025-11-09 00:23:22 [INFO]: 🚀 Serveur démarré sur le port 5000 en mode development
+2025-11-09 00:23:22 [INFO]: 📍 URL: http://localhost:5000
+2025-11-09 00:23:22 [INFO]: 🔗 API: http://localhost:5000/api
+2025-11-09 00:23:22 [INFO]: ✅ MongoDB connecté: ac-ergtame-shard-00-00.dnnot1m.mongodb.net
+2025-11-09 00:23:22 [INFO]: 📊 Base de données: test
+2025-11-09 00:31:02 [INFO]: 🚀 Serveur démarré sur le port 5000 en mode development
+2025-11-09 00:31:02 [INFO]: 📍 URL: http://localhost:5000
+2025-11-09 00:31:02 [INFO]: 🔗 API: http://localhost:5000/api
+2025-11-09 00:31:02 [INFO]: ✅ MongoDB connecté: ac-ergtame-shard-00-00.dnnot1m.mongodb.net
+2025-11-09 00:31:02 [INFO]: 📊 Base de données: test
+2025-11-09 00:31:12 [INFO]: 🚀 Serveur démarré sur le port 5000 en mode development
+2025-11-09 00:31:12 [INFO]: 📍 URL: http://localhost:5000
+2025-11-09 00:31:12 [INFO]: 🔗 API: http://localhost:5000/api
+2025-11-09 00:31:12 [INFO]: ✅ MongoDB connecté: ac-ergtame-shard-00-02.dnnot1m.mongodb.net
+2025-11-09 00:31:12 [INFO]: 📊 Base de données: test
+2025-11-09 00:31:21 [INFO]: 🚀 Serveur démarré sur le port 5000 en mode development
+2025-11-09 00:31:21 [INFO]: 📍 URL: http://localhost:5000
+2025-11-09 00:31:21 [INFO]: 🔗 API: http://localhost:5000/api
+2025-11-09 00:31:21 [INFO]: ✅ MongoDB connecté: ac-ergtame-shard-00-00.dnnot1m.mongodb.net
+2025-11-09 00:31:21 [INFO]: 📊 Base de données: test
+2025-11-09 00:31:31 [INFO]: 🚀 Serveur démarré sur le port 5000 en mode development
+2025-11-09 00:31:31 [INFO]: 📍 URL: http://localhost:5000
+2025-11-09 00:31:31 [INFO]: 🔗 API: http://localhost:5000/api
+2025-11-09 00:31:32 [INFO]: ✅ MongoDB connecté: ac-ergtame-shard-00-01.dnnot1m.mongodb.net
+2025-11-09 00:31:32 [INFO]: 📊 Base de données: test
+2025-11-09 00:31:49 [ERROR]: emailService.sendQuoteConfirmation is not a function
+TypeError: emailService.sendQuoteConfirmation is not a function
+    at createQuote (file:///C:/Users/HP/Documents/project/server/src/controllers/quoteController.js:46:18)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-09 00:31:53 [ERROR]: emailService.sendQuoteConfirmation is not a function
+TypeError: emailService.sendQuoteConfirmation is not a function
+    at createQuote (file:///C:/Users/HP/Documents/project/server/src/controllers/quoteController.js:46:18)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-09 00:31:58 [ERROR]: emailService.sendQuoteConfirmation is not a function
+TypeError: emailService.sendQuoteConfirmation is not a function
+    at createQuote (file:///C:/Users/HP/Documents/project/server/src/controllers/quoteController.js:46:18)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-09 00:33:04 [INFO]: 🚀 Serveur démarré sur le port 5000 en mode development
+2025-11-09 00:33:04 [INFO]: 📍 URL: http://localhost:5000
+2025-11-09 00:33:04 [INFO]: 🔗 API: http://localhost:5000/api
+2025-11-09 00:33:05 [INFO]: ✅ MongoDB connecté: ac-ergtame-shard-00-02.dnnot1m.mongodb.net
+2025-11-09 00:33:05 [INFO]: 📊 Base de données: test
+2025-11-09 00:33:08 [INFO]: 🚀 Serveur démarré sur le port 5000 en mode development
+2025-11-09 00:33:08 [INFO]: 📍 URL: http://localhost:5000
+2025-11-09 00:33:08 [INFO]: 🔗 API: http://localhost:5000/api
+2025-11-09 00:33:09 [INFO]: ✅ MongoDB connecté: ac-ergtame-shard-00-01.dnnot1m.mongodb.net
+2025-11-09 00:33:09 [INFO]: 📊 Base de données: test
+2025-11-09 00:33:19 [INFO]: 🚀 Serveur démarré sur le port 5000 en mode development
+2025-11-09 00:33:19 [INFO]: 📍 URL: http://localhost:5000
+2025-11-09 00:33:19 [INFO]: 🔗 API: http://localhost:5000/api
+2025-11-09 00:33:19 [INFO]: ✅ MongoDB connecté: ac-ergtame-shard-00-02.dnnot1m.mongodb.net
+2025-11-09 00:33:19 [INFO]: 📊 Base de données: test
+2025-11-09 00:38:19 [INFO]: 🚀 Serveur démarré sur le port 5000 en mode development
+2025-11-09 00:38:19 [INFO]: 📍 URL: http://localhost:5000
+2025-11-09 00:38:19 [INFO]: 🔗 API: http://localhost:5000/api
+2025-11-09 00:38:19 [INFO]: ✅ MongoDB connecté: ac-ergtame-shard-00-01.dnnot1m.mongodb.net
+2025-11-09 00:38:19 [INFO]: 📊 Base de données: test
+2025-11-09 00:38:31 [INFO]: 🚀 Serveur démarré sur le port 5000 en mode development
+2025-11-09 00:38:31 [INFO]: 📍 URL: http://localhost:5000
+2025-11-09 00:38:31 [INFO]: 🔗 API: http://localhost:5000/api
+2025-11-09 00:38:31 [INFO]: ✅ MongoDB connecté: ac-ergtame-shard-00-00.dnnot1m.mongodb.net
+2025-11-09 00:38:31 [INFO]: 📊 Base de données: test
+2025-11-09 00:38:41 [INFO]: 🚀 Serveur démarré sur le port 5000 en mode development
+2025-11-09 00:38:41 [INFO]: 📍 URL: http://localhost:5000
+2025-11-09 00:38:41 [INFO]: 🔗 API: http://localhost:5000/api
+2025-11-09 00:38:42 [INFO]: ✅ MongoDB connecté: ac-ergtame-shard-00-01.dnnot1m.mongodb.net
+2025-11-09 00:38:42 [INFO]: 📊 Base de données: test
+2025-11-09 00:39:13 [ERROR]: emailService.sendQuoteConfirmation is not a function
+TypeError: emailService.sendQuoteConfirmation is not a function
+    at createQuote (file:///C:/Users/HP/Documents/project/server/src/controllers/quoteController.js:48:18)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-09 00:40:57 [INFO]: 🚀 Serveur démarré sur le port 5000 en mode development
+2025-11-09 00:40:57 [INFO]: 📍 URL: http://localhost:5000
+2025-11-09 00:40:57 [INFO]: 🔗 API: http://localhost:5000/api
+2025-11-09 00:40:57 [INFO]: ✅ MongoDB connecté: ac-ergtame-shard-00-02.dnnot1m.mongodb.net
+2025-11-09 00:40:57 [INFO]: 📊 Base de données: test
+2025-11-09 00:41:29 [ERROR]: emailService.sendQuoteConfirmation is not a function
+TypeError: emailService.sendQuoteConfirmation is not a function
+    at createQuote (file:///C:/Users/HP/Documents/project/server/src/controllers/quoteController.js:48:18)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-11-09 00:45:41 [INFO]: 🚀 Serveur démarré sur le port 5000 en mode development
+2025-11-09 00:45:41 [INFO]: 📍 URL: http://localhost:5000
+2025-11-09 00:45:41 [INFO]: 🔗 API: http://localhost:5000/api
+2025-11-09 00:45:41 [INFO]: ✅ MongoDB connecté: ac-ergtame-shard-00-01.dnnot1m.mongodb.net
+2025-11-09 00:45:41 [INFO]: 📊 Base de données: test
+2025-11-09 00:46:00 [INFO]: 🚀 Serveur démarré sur le port 5000 en mode development
+2025-11-09 00:46:00 [INFO]: 📍 URL: http://localhost:5000
+2025-11-09 00:46:00 [INFO]: 🔗 API: http://localhost:5000/api
+2025-11-09 00:46:02 [INFO]: 🚀 Serveur démarré sur le port 5000 en mode development
+2025-11-09 00:46:02 [INFO]: 📍 URL: http://localhost:5000
+2025-11-09 00:46:02 [INFO]: 🔗 API: http://localhost:5000/api
+2025-11-09 00:46:03 [INFO]: ✅ MongoDB connecté: ac-ergtame-shard-00-01.dnnot1m.mongodb.net
+2025-11-09 00:46:03 [INFO]: 📊 Base de données: test
+2025-11-09 00:46:11 [INFO]: 🚀 Serveur démarré sur le port 5000 en mode development
+2025-11-09 00:46:11 [INFO]: 📍 URL: http://localhost:5000
+2025-11-09 00:46:11 [INFO]: 🔗 API: http://localhost:5000/api
+2025-11-09 00:46:12 [INFO]: ✅ MongoDB connecté: ac-ergtame-shard-00-02.dnnot1m.mongodb.net
+2025-11-09 00:46:12 [INFO]: 📊 Base de données: test
+2025-11-09 00:46:43 [ERROR]: Erreur d'envoi de confirmation devis à omar.houch20@gmail.com: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials 5b1f17b1804b1-47763b5714dsm83223525e9.0 - gsmtp
+2025-11-09 00:46:43 [ERROR]: Erreur d'envoi de notification admin: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials 5b1f17b1804b1-47778daf2c3sm13708755e9.10 - gsmtp
+2025-11-09 00:49:39 [INFO]: 🚀 Serveur démarré sur le port 5000 en mode development
+2025-11-09 00:49:39 [INFO]: 📍 URL: http://localhost:5000
+2025-11-09 00:49:39 [INFO]: 🔗 API: http://localhost:5000/api
+2025-11-09 00:49:39 [INFO]: ✅ MongoDB connecté: ac-ergtame-shard-00-02.dnnot1m.mongodb.net
+2025-11-09 00:49:39 [INFO]: 📊 Base de données: test
+2025-11-09 00:55:43 [INFO]: 🚀 Serveur démarré sur le port 5000 en mode development
+2025-11-09 00:55:43 [INFO]: 📍 URL: http://localhost:5000
+2025-11-09 00:55:43 [INFO]: 🔗 API: http://localhost:5000/api
+2025-11-09 00:55:44 [INFO]: ✅ MongoDB connecté: ac-ergtame-shard-00-02.dnnot1m.mongodb.net
+2025-11-09 00:55:44 [INFO]: 📊 Base de données: test
+2025-11-09 00:56:25 [ERROR]: Erreur d'envoi de confirmation devis à omarhouch20@gmail.com: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials ffacd0b85a97d-42b380a3a30sm85053f8f.4 - gsmtp
+2025-11-09 00:56:26 [ERROR]: Erreur d'envoi de notification admin: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials 5b1f17b1804b1-4776bcfd021sm159262175e9.11 - gsmtp
+2025-11-09 01:04:02 [INFO]: 🚀 Serveur démarré sur le port 5000 en mode development
+2025-11-09 01:04:02 [INFO]: 📍 URL: http://localhost:5000
+2025-11-09 01:04:02 [INFO]: 🔗 API: http://localhost:5000/api
+2025-11-09 01:04:03 [INFO]: ✅ MongoDB connecté: ac-ergtame-shard-00-01.dnnot1m.mongodb.net
+2025-11-09 01:04:03 [INFO]: 📊 Base de données: test
+2025-11-09 01:04:06 [ERROR]: Erreur d'envoi de confirmation devis à ramoagency@gmail.com: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials 5b1f17b1804b1-4775ce210a7sm249626165e9.12 - gsmtp
+2025-11-09 01:04:06 [ERROR]: Erreur d'envoi de notification admin: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials 5b1f17b1804b1-47778daf2c3sm14269295e9.10 - gsmtp
+2025-11-09 01:04:46 [ERROR]: Erreur d'envoi de confirmation devis à omarhouch20@gmail.com: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials ffacd0b85a97d-42b2dd927d5sm7097334f8f.24 - gsmtp
+2025-11-09 01:04:46 [ERROR]: Erreur d'envoi de notification admin: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials ffacd0b85a97d-42b2e9644fbsm6096670f8f.25 - gsmtp
+2025-11-09 01:05:18 [ERROR]: Erreur d'envoi de confirmation devis à omarhouch20@gmail.com: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials ffacd0b85a97d-42b2c6d3f67sm7842439f8f.37 - gsmtp
+2025-11-09 01:05:19 [ERROR]: Erreur d'envoi de notification admin: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials ffacd0b85a97d-42abe62bf40sm13552190f8f.9 - gsmtp
+2025-11-09 01:15:15 [INFO]: 🚀 Serveur démarré sur le port 5000 en mode development
+2025-11-09 01:15:15 [INFO]: 📍 URL: http://localhost:5000
+2025-11-09 01:15:15 [INFO]: 🔗 API: http://localhost:5000/api
+2025-11-09 01:15:16 [INFO]: ✅ MongoDB connecté: ac-ergtame-shard-00-00.dnnot1m.mongodb.net
+2025-11-09 01:15:16 [INFO]: 📊 Base de données: test
+2025-11-09 01:15:26 [INFO]: 🚀 Serveur démarré sur le port 5000 en mode development
+2025-11-09 01:15:26 [INFO]: 📍 URL: http://localhost:5000
+2025-11-09 01:15:26 [INFO]: 🔗 API: http://localhost:5000/api
+2025-11-09 01:15:27 [INFO]: ✅ MongoDB connecté: ac-ergtame-shard-00-02.dnnot1m.mongodb.net
+2025-11-09 01:15:27 [INFO]: 📊 Base de données: test
+2025-11-09 01:16:28 [ERROR]: Erreur d'envoi de confirmation devis à omarhouch20@gmail.com: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials 5b1f17b1804b1-4776bcd521fsm152317205e9.6 - gsmtp
+2025-11-09 01:16:28 [ERROR]: Erreur d'envoi de notification admin: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials ffacd0b85a97d-42b2ee2ed31sm6568596f8f.29 - gsmtp
+2025-11-09 01:17:06 [ERROR]: Erreur lors de l'envoi de l'email de bienvenue à demo@trading.com: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials 5b1f17b1804b1-4776bccd35asm123147825e9.1 - gsmtp
+2025-11-09 01:21:05 [INFO]: 🚀 Serveur démarré sur le port 5000 en mode development
+2025-11-09 01:21:05 [INFO]: 📍 URL: http://localhost:5000
+2025-11-09 01:21:05 [INFO]: 🔗 API: http://localhost:5000/api
+2025-11-09 01:21:06 [INFO]: ✅ MongoDB connecté: ac-ergtame-shard-00-02.dnnot1m.mongodb.net
+2025-11-09 01:21:06 [INFO]: 📊 Base de données: test
+2025-11-09 01:21:14 [INFO]: 🚀 Serveur démarré sur le port 5000 en mode development
+2025-11-09 01:21:14 [INFO]: 📍 URL: http://localhost:5000
+2025-11-09 01:21:14 [INFO]: 🔗 API: http://localhost:5000/api
+2025-11-09 01:21:15 [INFO]: ✅ MongoDB connecté: ac-ergtame-shard-00-01.dnnot1m.mongodb.net
+2025-11-09 01:21:15 [INFO]: 📊 Base de données: test
+2025-11-09 01:24:05 [ERROR]: Erreur d'envoi de confirmation devis à omarhouch20@gmail.com: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials ffacd0b85a97d-42abe62b23csm13758182f8f.10 - gsmtp
+2025-11-09 01:24:05 [ERROR]: Erreur d'envoi de notification admin: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials 5b1f17b1804b1-47775e9c6c7sm25056815e9.2 - gsmtp
+2025-11-09 01:27:09 [INFO]: 🚀 Serveur démarré sur le port 5000 en mode development
+2025-11-09 01:27:09 [INFO]: 📍 URL: http://localhost:5000
+2025-11-09 01:27:09 [INFO]: 🔗 API: http://localhost:5000/api
+2025-11-09 01:27:10 [INFO]: ✅ MongoDB connecté: ac-ergtame-shard-00-00.dnnot1m.mongodb.net
+2025-11-09 01:27:10 [INFO]: 📊 Base de données: test
