@@ -1,0 +1,35 @@
+/* Logo.css */
+
+.logo-link {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+.logo-image {
+  width: 60px;
+  height: 60px;
+  transition: all 0.3s ease;
+  object-fit: contain;
+}
+
+/* Tablette */
+@media (min-width: 768px) {
+  .logo-image {
+    width: 70px;
+    height: 70px;
+  }
+}
+
+/* Desktop */
+@media (min-width: 1024px) {
+  .logo-image {
+    width: 80px;
+    height: 80px;
+  }
+}
+
+/* Effet hover */
+.logo-link:hover .logo-image {
+  transform: scale(1.05);
+}
