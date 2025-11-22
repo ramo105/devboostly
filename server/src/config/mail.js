@@ -5,14 +5,17 @@ dotenv.config();
 
 // Configuration du transporteur email
 const transporter = nodemailer.createTransport({
-  host: process.env.EMAIL_HOST,
-  port: process.env.EMAIL_PORT,
-  secure: false, // true pour 465, false pour les autres ports
+  service: 'gmail',
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASSWORD,
   },
 });
+console.log('EMAIL_USER =', process.env.EMAIL_USER)
+console.log(
+  'EMAIL_PASSWORD length =',
+  process.env.EMAIL_PASSWORD ? process.env.EMAIL_PASSWORD.length : 'undefined'
+)
 
 // Vérifier la connexion
 transporter.verify((error, success) => {

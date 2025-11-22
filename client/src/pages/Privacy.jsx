@@ -204,7 +204,8 @@ function Privacy() {
                     <strong>Téléphone :</strong> {COMPANY_INFO.phone}
                   </li>
                   <li>
-                    <strong>Adresse :</strong> {COMPANY_INFO.address}
+                    <strong>Adresse :</strong> Les Mureaux, France
+                  
                   </li>
                 </ul>
               </CardContent>

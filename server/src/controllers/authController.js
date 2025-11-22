@@ -35,14 +35,6 @@ export const register = async (req, res, next) => {
       password,
       phone
     })
-
-    // Envoyer email de bienvenue
-    try {
-      await emailService.sendWelcomeEmail(user)
-    } catch (error) {
-      logger.error(`Erreur envoi email bienvenue: ${error.message}`)
-    }
-
     // Générer token
     const token = generateToken(user._id)
 
@@ -155,7 +147,6 @@ export const logout = async (req, res, next) => {
     next(error)
   }
 }
-
 // @desc    Mot de passe oublié
 // @route   POST /api/auth/forgot-password
 // @access  Public

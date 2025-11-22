@@ -14,7 +14,6 @@ import {
 import { useAuth } from '@/hooks/useAuth'
 import ThemeToggle from '@/components/ThemeToggle'
 import Logo from './Logo.jsx'
-
 function Header() {
   const [isOpen, setIsOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
@@ -27,6 +26,10 @@ function Header() {
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
+    useEffect(() => {
+    // À chaque changement de chemin, on remonte en haut de la page
+    window.scrollTo({ top: 0, behavior: 'smooth' }) // ou 'auto' si tu ne veux pas d’animation
+  }, [location.pathname])
 
   useEffect(() => {
     setIsOpen(false)
@@ -290,7 +293,7 @@ function Header() {
           </div>
 
           <div className="p-4 text-center text-xs text-muted-foreground border-t mt-4 rounded-b-2xl">
-            <p>© 2024 Devboostly</p>
+            <p>© 2025 Devboostly</p>
             <p className="mt-1">Tous droits réservés</p>
           </div>
         </nav>

@@ -1,8 +1,10 @@
+// controllers/userController.js
 import User from '../models/User.js'
 import Order from '../models/Order.js'
 import Invoice from '../models/Invoice.js'
 import Project from '../models/Project.js'
 import Quote from '../models/Quote.js'
+// si tu as vraiment un logger, garde-le, sinon tu peux enlever
 import { logger } from '../utils/logger.js'
 
 // @desc    Récupérer tous les utilisateurs
@@ -19,15 +21,15 @@ export const getAllUsers = async (req, res, next) => {
       query.$or = [
         { firstName: { $regex: search, $options: 'i' } },
         { lastName: { $regex: search, $options: 'i' } },
-        { email: { $regex: search, $options: 'i' } }
+        { email: { $regex: search, $options: 'i' } },
       ]
     }
 
     const users = await User.find(query)
       .select('-password')
       .sort({ createdAt: -1 })
-      .limit(limit * 1)
-      .skip((page - 1) * limit)
+      .limit(Number(limit))
+      .skip((Number(page) - 1) * Number(limit))
 
     const count = await User.countDocuments(query)
 
@@ -35,15 +37,15 @@ export const getAllUsers = async (req, res, next) => {
       success: true,
       count: users.length,
       totalPages: Math.ceil(count / limit),
-      currentPage: page,
-      data: users
+      currentPage: Number(page),
+      data: users,
     })
   } catch (error) {
     next(error)
   }
 }
 
-// @desc    Récupérer un utilisateur
+// @desc    Récupérer un utilisateur + stats
 // @route   GET /api/users/:id
 // @access  Private/Admin
 export const getUserById = async (req, res, next) => {
@@ -53,16 +55,15 @@ export const getUserById = async (req, res, next) => {
     if (!user) {
       return res.status(404).json({
         success: false,
-        message: 'Utilisateur non trouvé'
+        message: 'Utilisateur non trouvé',
       })
     }
 
-    // Récupérer les statistiques
     const [orderCount, invoiceCount, projectCount, quoteCount] = await Promise.all([
       Order.countDocuments({ userId: user._id }),
       Invoice.countDocuments({ userId: user._id }),
       Project.countDocuments({ userId: user._id }),
-      Quote.countDocuments({ userId: user._id })
+      Quote.countDocuments({ userId: user._id }),
     ])
 
     res.status(200).json({
@@ -73,9 +74,57 @@ export const getUserById = async (req, res, next) => {
           orders: orderCount,
           invoices: invoiceCount,
           projects: projectCount,
-          quotes: quoteCount
-        }
-      }
+          quotes: quoteCount,
+        },
+      },
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
+// 🔥 NOUVEAU
+// @desc    Récupérer l’historique (commandes, factures, devis) d’un user
+// @route   GET /api/users/:id/history
+// @access  Private/Admin
+export const getUserHistory = async (req, res, next) => {
+  try {
+    const { id } = req.params
+
+    // on vérifie que l’utilisateur existe
+    const user = await User.findById(id).select('-password')
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'Utilisateur non trouvé',
+      })
+    }
+
+    const [orders, invoices, quotes] = await Promise.all([
+      // commandes de l’utilisateur
+      Order.find({ userId: id })
+        .sort({ createdAt: -1 })
+        .populate('offerId', 'name price')
+        .lean(),
+
+      // factures de l’utilisateur
+      Invoice.find({ userId: id })
+        .sort({ createdAt: -1 })
+        .populate('orderId', 'orderNumber')
+        .lean(),
+
+      // devis de l’utilisateur
+      Quote.find({ userId: id }).sort({ createdAt: -1 }).lean(),
+    ])
+
+    res.status(200).json({
+      success: true,
+      data: {
+        user,
+        orders,
+        invoices,
+        quotes,
+      },
     })
   } catch (error) {
     next(error)
@@ -89,12 +138,11 @@ export const createUser = async (req, res, next) => {
   try {
     const { firstName, lastName, email, password, role, phone, address } = req.body
 
-    // Vérifier si l'utilisateur existe
     const userExists = await User.findOne({ email })
     if (userExists) {
       return res.status(400).json({
         success: false,
-        message: 'Cet email est déjà utilisé'
+        message: 'Cet email est déjà utilisé',
       })
     }
 
@@ -105,7 +153,7 @@ export const createUser = async (req, res, next) => {
       password,
       role: role || 'client',
       phone,
-      address
+      address,
     })
 
     res.status(201).json({
@@ -116,8 +164,8 @@ export const createUser = async (req, res, next) => {
         firstName: user.firstName,
         lastName: user.lastName,
         email: user.email,
-        role: user.role
-      }
+        role: user.role,
+      },
     })
   } catch (error) {
     next(error)
@@ -132,21 +180,20 @@ export const updateUser = async (req, res, next) => {
     const { firstName, lastName, email, role, phone, address, isActive } = req.body
 
     const user = await User.findById(req.params.id)
-
     if (!user) {
       return res.status(404).json({
         success: false,
-        message: 'Utilisateur non trouvé'
+        message: 'Utilisateur non trouvé',
       })
     }
 
-    // Vérifier si l'email est déjà utilisé
+    // si on change l’email, vérifier qu’il n’est pas déjà pris
     if (email && email !== user.email) {
       const emailExists = await User.findOne({ email })
       if (emailExists) {
         return res.status(400).json({
           success: false,
-          message: 'Cet email est déjà utilisé'
+          message: 'Cet email est déjà utilisé',
         })
       }
     }
@@ -164,7 +211,7 @@ export const updateUser = async (req, res, next) => {
     res.status(200).json({
       success: true,
       message: 'Utilisateur modifié',
-      data: user
+      data: user,
     })
   } catch (error) {
     next(error)
@@ -181,33 +228,22 @@ export const deleteUser = async (req, res, next) => {
     if (!user) {
       return res.status(404).json({
         success: false,
-        message: 'Utilisateur non trouvé'
+        message: 'Utilisateur non trouvé',
       })
-    }
-
-    // Ne pas permettre de supprimer le dernier admin
-    if (user.role === 'admin') {
-      const adminCount = await User.countDocuments({ role: 'admin' })
-      if (adminCount <= 1) {
-        return res.status(400).json({
-          success: false,
-          message: 'Impossible de supprimer le dernier administrateur'
-        })
-      }
     }
 
     await user.deleteOne()
 
     res.status(200).json({
       success: true,
-      message: 'Utilisateur supprimé'
+      message: 'Utilisateur supprimé',
     })
   } catch (error) {
     next(error)
   }
 }
 
-// @desc    Activer/Désactiver un utilisateur
+// @desc    Activer / désactiver un utilisateur
 // @route   PATCH /api/users/:id/toggle-active
 // @access  Private/Admin
 export const toggleUserActive = async (req, res, next) => {
@@ -217,7 +253,7 @@ export const toggleUserActive = async (req, res, next) => {
     if (!user) {
       return res.status(404).json({
         success: false,
-        message: 'Utilisateur non trouvé'
+        message: 'Utilisateur non trouvé',
       })
     }
 
@@ -227,43 +263,42 @@ export const toggleUserActive = async (req, res, next) => {
     res.status(200).json({
       success: true,
       message: `Utilisateur ${user.isActive ? 'activé' : 'désactivé'}`,
-      data: user
+      data: user,
     })
   } catch (error) {
     next(error)
   }
 }
 
-// @desc    Changer rôle utilisateur
+// @desc    Changer le rôle d’un utilisateur
 // @route   PATCH /api/users/:id/role
 // @access  Private/Admin
 export const changeUserRole = async (req, res, next) => {
   try {
     const { role } = req.body
 
-    if (!['client', 'admin'].includes(role)) {
+    if (!role || !['client', 'admin'].includes(role)) {
       return res.status(400).json({
         success: false,
-        message: 'Rôle invalide'
+        message: 'Rôle invalide',
       })
     }
 
     const user = await User.findById(req.params.id)
-
     if (!user) {
       return res.status(404).json({
         success: false,
-        message: 'Utilisateur non trouvé'
+        message: 'Utilisateur non trouvé',
       })
     }
 
-    // Ne pas permettre de retirer le rôle admin au dernier admin
+    // petite sécurité: ne pas enlever le dernier admin
     if (user.role === 'admin' && role === 'client') {
       const adminCount = await User.countDocuments({ role: 'admin' })
       if (adminCount <= 1) {
         return res.status(400).json({
           success: false,
-          message: 'Impossible de retirer le rôle au dernier administrateur'
+          message: 'Impossible de retirer le rôle au dernier administrateur',
         })
       }
     }
@@ -274,14 +309,14 @@ export const changeUserRole = async (req, res, next) => {
     res.status(200).json({
       success: true,
       message: 'Rôle modifié',
-      data: user
+      data: user,
     })
   } catch (error) {
     next(error)
   }
 }
 
-// @desc    Réinitialiser mot de passe utilisateur (Admin)
+// @desc    Réinitialiser le mot de passe d’un user (par admin)
 // @route   POST /api/users/:id/reset-password
 // @access  Private/Admin
 export const adminResetPassword = async (req, res, next) => {
@@ -289,11 +324,10 @@ export const adminResetPassword = async (req, res, next) => {
     const { newPassword } = req.body
 
     const user = await User.findById(req.params.id)
-
     if (!user) {
       return res.status(404).json({
         success: false,
-        message: 'Utilisateur non trouvé'
+        message: 'Utilisateur non trouvé',
       })
     }
 
@@ -304,7 +338,7 @@ export const adminResetPassword = async (req, res, next) => {
 
     res.status(200).json({
       success: true,
-      message: 'Mot de passe réinitialisé'
+      message: 'Mot de passe réinitialisé',
     })
   } catch (error) {
     next(error)

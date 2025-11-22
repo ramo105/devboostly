@@ -107,7 +107,6 @@ projectSchema.pre('save', async function(next) {
 // Index
 projectSchema.index({ userId: 1 });
 projectSchema.index({ orderId: 1 });
-projectSchema.index({ projectNumber: 1 });
 projectSchema.index({ status: 1 });
 
 const Project = mongoose.model('Project', projectSchema);

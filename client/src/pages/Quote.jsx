@@ -341,7 +341,7 @@ function Quote() {
                   />
                 </div>
 
-                <Button type="submit" className="w-full" size="lg" disabled={loading}>
+                <Button type="submit" className="w-full bg-blue-500 text-white" size="lg" disabled={loading}>
                   {loading ? 'Envoi en cours...' : 'Envoyer ma demande de devis'}
                 </Button>
               </form>

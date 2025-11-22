@@ -27,7 +27,6 @@ import LegalMentions from './pages/LegalMentions'
 import Privacy from './pages/Privacy'
 import Admin from './pages/Admin'
 import NotFound from './pages/NotFound'
-
 function App() {
   return (
     <ThemeProvider>
@@ -41,6 +40,7 @@ function App() {
               <Route path="/services" element={<Services />} />
               <Route path="/offres" element={<Offers />} />
               <Route path="/devis" element={<Quote />} />
+              <Route path="/reset-password/:token" element={<ResetPassword />} />
               <Route path="/contact" element={<Contact />} />
               
               {/* Routes d'authentification */}
@@ -63,13 +63,13 @@ function App() {
                 }
               />
               <Route
-                path="/checkout/:offerId"
-                element={
-                  <ProtectedRoute>
-                    <Checkout />
-                  </ProtectedRoute>
-                }
-              />
+  path="/checkout"
+  element={
+    <ProtectedRoute>
+      <Checkout />
+    </ProtectedRoute>
+  }
+/>
               <Route
                 path="/commande-reussie/:orderId"
                 element={

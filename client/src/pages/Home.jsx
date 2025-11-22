@@ -275,69 +275,49 @@ function Home() {
   return (
     <div>
       {/* Hero Section avec Gradient et Image - CENTRÉ MOBILE */}
-      <section className="relative overflow-hidden py-24 md:py-32">
-        {/* Gradient Background */}
-        <div className="absolute inset-0 -z-10">
-          <div className="absolute inset-0 bg-gradient-to-br from-[#3ae5ae]/10 via-[#3B82F6]/10 to-transparent dark:from-[#1e1b4b]/30 dark:via-[#1e3a8a]/30"></div>
-          <div className="absolute top-0 right-0 -mt-20 -mr-20 h-96 w-96 rounded-full bg-[#3ae5ae]/20 dark:bg-[#2563eb]/20 blur-3xl"></div>
-          <div className="absolute bottom-0 left-0 -mb-20 -ml-20 h-96 w-96 rounded-full bg-[#3B82F6]/20 dark:bg-[#1e3a8a]/20 blur-3xl"></div>
-        </div>
+      <section className="relative overflow-hidden py-65 md:py-40">
+  {/* Gradient Background */}
+  <div className="absolute inset-0 -z-10">
+    <div className="absolute inset-0 bg-gradient-to-br from-[#3ae5ae]/10 via-[#3B82F6]/10 to-transparent dark:from-[#1e1b4b]/30 dark:via-[#1e3a8a]/30"></div>
+    <div className="absolute top-0 right-0 -mt-20 -mr-20 h-96 w-96 rounded-full bg-[#3ae5ae]/20 dark:bg-[#2563eb]/20 blur-3xl"></div>
+    <div className="absolute bottom-0 left-0 -mb-20 -ml-20 h-96 w-96 rounded-full bg-[#3B82F6]/20 dark:bg-[#1e3a8a]/20 blur-3xl"></div>
+  </div>
 
-        <div className="container max-w-[1400px] mx-auto px-6">
-          <div className="grid items-center gap-12 lg:grid-cols-2">
-            {/* Contenu à gauche - CENTRÉ MOBILE */}
-            <div className="text-center lg:text-left flex flex-col justify-center relative">
-              <h1 className="mb-6 text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
-                Boostez votre activité avec un{' '}
-                <span className="text-[#3ae5ae] block mt-2 min-h-[1.2em]">
-                  {displayText}
-                  <span className="animate-pulse">|</span>
-                </span>
-              </h1>
-              <p className="mb-8 text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto lg:mx-0">
-                Création de sites web modernes, rapides et performants pour développer votre présence en ligne et atteindre vos objectifs business
-              </p>
-              <div className="flex flex-col justify-center gap-4 sm:flex-row lg:justify-start">
-                <Link to="/services">
-                  <Button size="lg" className="bg-[#3ae5ae] text-white hover:bg-[#2dd49d] border-2 border-[#3ae5ae] transition-all w-full sm:w-auto">
-                    Voir nos services
-                    <ArrowRight className="ml-2 h-5 w-5" />
-                  </Button>
-                </Link>
-                <Link to="/devis">
-                  <Button size="lg" className="bg-[#5e67fe] text-white hover:bg-[#4d56ed] transition-all w-full sm:w-auto shadow-lg">
-                    Demander un devis
-                  </Button>
-                </Link>
-              </div>
-            </div>
+  <div className="container max-w-[900px] mx-auto px-6">
+    <div className="flex flex-col items-center text-center">
+      <h1 className="mb-6 text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
+        Boostez votre activité avec un{" "}
+        <span className="text-[#3ae5ae] block mt-2 min-h-[1.2em]">
+          {displayText}
+          <span className="animate-pulse">|</span>
+        </span>
+      </h1>
+      <p className="mb-8 text-lg md:text-xl text-muted-foreground max-w-2xl">
+        Des sites web rapides, modernes et intuitifs conçus pour valoriser votre image et accompagner le développement de votre entreprise.
+      </p>
+      <div className="flex flex-col justify-center gap-4 sm:flex-row">
+        <Link to="/services">
+          <Button
+            size="lg"
+            className="bg-[#3ae5ae] text-white hover:bg-[#2dd49d] border-2 border-[#3ae5ae] transition-all w-full sm:w-auto"
+          >
+            Voir nos services
+            <ArrowRight className="ml-2 h-5 w-5" />
+          </Button>
+        </Link>
+        <Link to="/devis">
+          <Button
+            size="lg"
+            className="bg-[#5e67fe] text-white hover:bg-[#4d56ed] transition-all w-full sm:w-auto shadow-lg"
+          >
+            Demander un devis
+          </Button>
+        </Link>
+      </div>
+    </div>
+  </div>
+</section>
 
-            {/* Image à droite avec SVG décoratifs */}
-            <div className="relative hidden lg:flex justify-center items-center">
-              <div className="relative z-10">
-                <img 
-                  src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&auto=format&fit=crop&q=80" 
-                  alt="Création de site web professionnel" 
-                  className="rounded-2xl shadow-2xl border border-primary/20 dark:border-[#2563eb]/30 max-w-full"
-                />
-                
-                <div className="absolute -top-12 -right-12 animate-bounce" style={{animationDuration: '3s'}}>
-                  <img src={search} alt="" className="w-28 h-28 opacity-80" />
-                </div>
-                
-                <div className="absolute -bottom-12 -right-12 animate-pulse" style={{animationDelay: '0.5s'}}>
-                  <img src={msg} alt="" className="w-28 h-28 opacity-80" />
-                </div>
-              </div>
-              
-              <div className="absolute inset-0 -z-10 blur-3xl opacity-30">
-                <div className="absolute top-1/4 right-1/4 h-72 w-72 rounded-full bg-[#3ae5ae] dark:bg-[#2563eb]"></div>
-                <div className="absolute bottom-1/4 left-1/4 h-72 w-72 rounded-full bg-[#3B82F6] dark:bg-[#1e3a8a]"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* Animated Tech Logos Section */}
       <section className="bg-muted/50 dark:bg-[#1e1b4b]/20 mt-10">

@@ -1,27 +1,27 @@
+// src/pages/ResetPassword.jsx
 import { useState } from 'react'
-import { useParams, useNavigate, Link } from 'react-router-dom'
-import { toast } from 'sonner'
+import { useNavigate, useParams } from 'react-router-dom'
+import api from '@/lib/api'
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Lock, Eye, EyeOff } from 'lucide-react'
-import { authService } from '@/services/authService'
+import { toast } from 'sonner'
+import { Loader2 } from 'lucide-react'
 
-function ResetPassword() {
+export default function ResetPassword() {
   const { token } = useParams()
   const navigate = useNavigate()
-  
+
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
-  const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
 
   const handleSubmit = async (e) => {
     e.preventDefault()
 
-    if (password.length < 6) {
-      toast.error('Le mot de passe doit contenir au moins 6 caractères')
+    if (!password || !confirmPassword) {
+      toast.error('Merci de remplir les deux champs')
       return
     }
 
@@ -30,88 +30,90 @@ function ResetPassword() {
       return
     }
 
+    if (password.length < 6) {
+      toast.error('Le mot de passe doit contenir au moins 6 caractères')
+      return
+    }
+
     setLoading(true)
 
     try {
-      await authService.resetPassword(token, password)
-      toast.success('Mot de passe réinitialisé avec succès !')
-      navigate('/connexion')
-    } catch (error) {
-      toast.error(error.response?.data?.message || 'Erreur lors de la réinitialisation')
+      await api.post(`/auth/reset-password/${token}`, { password })
+
+      toast.success('Mot de passe réinitialisé avec succès')
+      // adapte la route si ta page de login a un autre chemin
+      navigate('/')
+    } catch (err) {
+      const message =
+        err?.response?.data?.message || 'Erreur lors de la réinitialisation du mot de passe'
+      toast.error(message)
+      console.error('Erreur reset password:', err)
     } finally {
       setLoading(false)
     }
   }
 
   return (
-    <div className="container flex min-h-[calc(100vh-200px)] items-center justify-center py-12">
-      <Card className="w-full max-w-md">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-slate-950 to-slate-900 px-4">
+      <Card className="w-full max-w-md shadow-lg border border-slate-800 bg-slate-900/90">
         <CardHeader>
-          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
-            <Lock className="h-8 w-8 text-primary" />
-          </div>
-          <CardTitle className="text-center">Nouveau mot de passe</CardTitle>
-          <CardDescription className="text-center">
-            Choisissez un nouveau mot de passe sécurisé
+          <CardTitle className="text-xl font-semibold text-slate-50">
+            Réinitialiser votre mot de passe
+          </CardTitle>
+          <CardDescription className="text-slate-300">
+            Choisissez un nouveau mot de passe pour votre compte.
           </CardDescription>
         </CardHeader>
+
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="password">Nouveau mot de passe</Label>
-              <div className="relative">
-                <Input
-                  id="password"
-                  type={showPassword ? 'text' : 'password'}
-                  placeholder="••••••••"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2"
-                >
-                  {showPassword ? (
-                    <EyeOff className="h-4 w-4 text-muted-foreground" />
-                  ) : (
-                    <Eye className="h-4 w-4 text-muted-foreground" />
-                  )}
-                </button>
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="confirmPassword">Confirmer le mot de passe</Label>
+              <Label htmlFor="password" className="text-slate-100">
+                Nouveau mot de passe
+              </Label>
               <Input
-                id="confirmPassword"
-                type={showPassword ? 'text' : 'password'}
+                id="password"
+                type="password"
+                autoComplete="new-password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="bg-slate-900 border-slate-700 text-slate-50"
                 placeholder="••••••••"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                required
               />
             </div>
 
-            <Button 
-              type="submit" 
-              className="w-full gradient-primary text-white"
+            <div className="space-y-2">
+              <Label htmlFor="confirmPassword" className="text-slate-100">
+                Confirmer le mot de passe
+              </Label>
+              <Input
+                id="confirmPassword"
+                type="password"
+                autoComplete="new-password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                className="bg-slate-900 border-slate-700 text-slate-50"
+                placeholder="••••••••"
+              />
+            </div>
+
+            <Button
+              type="submit"
+              className="w-full mt-2"
               disabled={loading}
             >
-              {loading ? 'Réinitialisation...' : 'Réinitialiser le mot de passe'}
+              {loading ? (
+                <span className="flex items-center gap-2">
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  Réinitialisation en cours...
+                </span>
+              ) : (
+                'Valider le nouveau mot de passe'
+              )}
             </Button>
-
-            <Link to="/connexion" className="block">
-              <Button variant="ghost" className="w-full">
-                Retour à la connexion
-              </Button>
-            </Link>
           </form>
         </CardContent>
       </Card>
     </div>
   )
 }
-
-export default ResetPassword;

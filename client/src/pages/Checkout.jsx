@@ -1,29 +1,50 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
-import { PayPalScriptProvider, PayPalButtons } from '@paypal/react-paypal-js'
+import { loadStripe } from '@stripe/stripe-js'
+import {
+  Elements,
+  CardElement,
+  useStripe,
+  useElements,
+} from '@stripe/react-stripe-js'
+
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Separator } from '@/components/ui/separator'
 import { AlertCircle, ShoppingCart } from 'lucide-react'
+
 import { useAuth } from '@/hooks/useAuth'
 import { orderService } from '@/services/orderService'
-import { paymentService } from '@/services/paymentService'
 import { formatPrice } from '@/lib/utils'
+import api from '@/lib/api'
 import { toast } from 'sonner'
 
-const PAYPAL_CLIENT_ID = import.meta.env.VITE_PAYPAL_CLIENT_ID
+// Clé publique Stripe (front)
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY)
 
-function Checkout() {
+// --------------------
+// Composant interne
+// --------------------
+function CheckoutInner() {
   const navigate = useNavigate()
   const location = useLocation()
   const { user } = useAuth()
+
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [selectedOffer, setSelectedOffer] = useState(null)
+  const [order, setOrder] = useState(null)
+
   const [formData, setFormData] = useState({
     siteType: '',
     budget: '',
@@ -32,15 +53,27 @@ function Checkout() {
     additionalInfo: '',
   })
 
+  const stripe = useStripe()
+  const elements = useElements()
+
+  // Récupérer l'offre depuis Offers.jsx (location.state)
   useEffect(() => {
-    // Récupérer l'offre depuis l'état de navigation
-    const offer = location.state?.offer || location.state?.pack
-    if (offer) {
+    const { itemId, itemType, itemName, itemPrice } = location.state || {}
+
+    if (itemId && itemType) {
+      const offer = {
+        id: itemId,
+        name: itemName,
+        price: Number(itemPrice) || 0,
+        type: itemType,
+      }
       setSelectedOffer(offer)
+
+      // Pré-remplir type de site + budget (lecture seule)
       setFormData((prev) => ({
         ...prev,
-        siteType: offer.name || '',
-        budget: offer.price ? `${offer.price}€` : '',
+        siteType: itemName || '',
+        budget: itemPrice ? `${itemPrice}€` : '',
       }))
     } else {
       toast.error('Aucune offre sélectionnée')
@@ -56,68 +89,136 @@ function Checkout() {
     setError('')
   }
 
-  const createOrder = async (data, actions) => {
+  const validateForm = () => {
+    if (!selectedOffer) {
+      setError('Aucune offre sélectionnée')
+      return false
+    }
+
+    if (!formData.deadline) {
+      setError('Merci de sélectionner un délai souhaité.')
+      return false
+    }
+
+    if (!formData.description.trim()) {
+      setError('Merci de décrire votre projet.')
+      return false
+    }
+
+    if (!user?.email) {
+      setError("Votre email est manquant. Veuillez mettre à jour votre profil.")
+      return false
+    }
+
+    return true
+  }
+
+  const handlePayNow = async () => {
+    setError('')
+
+    if (!stripe || !elements) {
+      setError('Le module de paiement n’est pas prêt. Veuillez patienter.')
+      return
+    }
+
+    if (!validateForm()) return
+    if (!selectedOffer) return
+
+    setLoading(true)
+
     try {
-      setLoading(true)
-      
-      // Créer la commande dans notre base de données
-      const orderData = {
-        offerId: selectedOffer.id,
-        amount: selectedOffer.price,
-        projectDetails: formData,
+      let currentOrder = order
+
+      // 1️⃣ Créer la commande si elle n'existe pas encore
+      if (!currentOrder) {
+        const isTemp = String(selectedOffer.id).startsWith('temp_')
+
+        const orderData = {
+          itemId: selectedOffer.id,
+          itemType: selectedOffer.type,
+          projectDetails: formData,
+          billingInfo: {
+            firstName: user?.firstName || '',
+            lastName: user?.lastName || '',
+            email: user?.email || '',
+          },
+        }
+
+        if (isTemp) {
+          orderData.itemName = selectedOffer.name
+          orderData.itemPrice = Number(selectedOffer.price)
+        }
+
+        const res = await orderService.createOrder(orderData)
+        const createdOrder = res?.data?.data || res?.data || res
+
+        if (!createdOrder || !createdOrder._id) {
+          throw new Error('Commande créée mais réponse invalide du backend.')
+        }
+
+        currentOrder = createdOrder
+        setOrder(createdOrder)
+        toast.success('Commande créée')
       }
 
-      const order = await orderService.createOrder(orderData)
+      const orderId = currentOrder._id || currentOrder.id
 
-      // Créer l'ordre PayPal
-      return actions.order.create({
-        purchase_units: [
-          {
-            amount: {
-              value: selectedOffer.price.toString(),
-              currency_code: 'EUR',
+      // 2️⃣ Demander au backend de créer le PaymentIntent pour l'acompte (40 %)
+      const payRes = await api.post(`/orders/${orderId}/pay-deposit`)
+      const { clientSecret, amount, currency } = payRes.data || {}
+
+      if (!clientSecret) {
+        throw new Error("Impossible d'initialiser le paiement (clientSecret manquant).")
+      }
+
+      const cardElement = elements.getElement(CardElement)
+      if (!cardElement) {
+        throw new Error('Champ carte bancaire introuvable.')
+      }
+
+      // 3️⃣ Confirmer le paiement Stripe côté front
+      const { error: stripeError, paymentIntent } =
+        await stripe.confirmCardPayment(clientSecret, {
+          payment_method: {
+            card: cardElement,
+            billing_details: {
+              name: `${user?.firstName || ''} ${user?.lastName || ''}`.trim() || undefined,
+              email: user?.email || undefined,
             },
-            description: selectedOffer.name,
           },
-        ],
-        application_context: {
-          brand_name: 'Devboostly',
-          shipping_preference: 'NO_SHIPPING',
-        },
-      })
+        })
+
+      if (stripeError) {
+        console.error('Stripe error:', stripeError)
+        setError(stripeError.message || 'Erreur lors du paiement.')
+        toast.error(stripeError.message || 'Erreur lors du paiement.')
+        return
+      }
+
+      if (paymentIntent?.status === 'succeeded') {
+  try {
+    await api.post(`/orders/${orderId}/confirm-deposit`, {
+      orderId: orderId,
+      paymentIntentId: paymentIntent.id
+    })
+    toast.success(`Acompte paye avec succes.`)
+    navigate('/espace-client?tab=orders', { state: { orderId } })
+  } catch (confirmError) {
+    console.error('Erreur confirmation:', confirmError)
+    toast.warning('Paiement reussi. Actualisez la page.')
+    navigate('/espace-client?tab=orders')
+  }
+} else {
+        setError("Le paiement n'a pas été confirmé. Statut: " + paymentIntent?.status)
+        toast.error("Le paiement n'a pas été confirmé.")
+      }
     } catch (err) {
-      setError(err.response?.data?.message || 'Erreur lors de la création de la commande')
-      toast.error('Erreur lors de la création de la commande')
-      throw err
+      console.error('Erreur paiement acompte:', err)
+      setError(err.response?.data?.message || err.message || 'Erreur lors du paiement.')
+      toast.error(err.response?.data?.message || 'Erreur lors du paiement.')
     } finally {
       setLoading(false)
     }
-  }
-
-  const onApprove = async (data, actions) => {
-    try {
-      setLoading(true)
-      
-      // Capturer le paiement PayPal
-      const details = await actions.order.capture()
-      
-      // Envoyer la confirmation au backend
-      await paymentService.capturePayment(details.id)
-      
-      toast.success('Paiement effectué avec succès !')
-      navigate('/commande-reussie', { state: { orderId: details.id } })
-    } catch (err) {
-      setError('Erreur lors du traitement du paiement')
-      toast.error('Erreur lors du traitement du paiement')
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  const onError = (err) => {
-    console.error('Erreur PayPal:', err)
-    setError('Erreur lors du paiement. Veuillez réessayer.')
-    toast.error('Erreur lors du paiement')
   }
 
   if (!selectedOffer) {
@@ -128,6 +229,17 @@ function Checkout() {
     )
   }
 
+  const totalAmount = Number(selectedOffer.price) || 0
+const isPack = selectedOffer.type === 'pack'
+
+// Pour les packs, le backend met déjà 100 % en "deposit.amount"
+const depositAmount =
+  order?.deposit?.amount ??
+  (isPack ? totalAmount : totalAmount * 0.4)
+
+const remainingAmount = Math.max(totalAmount - depositAmount, 0)
+
+
   return (
     <div className="py-12">
       <div className="container">
@@ -136,8 +248,10 @@ function Checkout() {
           <div className="mb-8 text-center">
             <h1 className="mb-2 text-3xl font-bold">Finaliser votre commande</h1>
             <p className="text-muted-foreground">
-              Complétez les informations et procédez au paiement sécurisé
-            </p>
+  {isPack
+    ? 'Complétez les informations et réglez votre pack en une seule fois'
+    : 'Complétez les informations et payez un acompte sécurisé de 40 %'}
+</p>
           </div>
 
           <div className="grid gap-8 lg:grid-cols-3">
@@ -147,7 +261,7 @@ function Checkout() {
                 <CardHeader>
                   <CardTitle>Détails du projet</CardTitle>
                   <CardDescription>
-                    Donnez-nous plus d'informations sur votre projet
+                    Donnez-nous plus d&apos;informations sur votre projet
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
@@ -191,7 +305,7 @@ function Checkout() {
                       required
                     >
                       <option value="">Sélectionnez un délai</option>
-                      <option value="Urgent (moins d'1 mois)">Urgent (moins d'1 mois)</option>
+                      <option value="Urgent (moins d'1 mois)">Urgent (moins d&apos;1 mois)</option>
                       <option value="1 à 2 mois">1 à 2 mois</option>
                       <option value="2 à 3 mois">2 à 3 mois</option>
                       <option value="Plus de 3 mois">Plus de 3 mois</option>
@@ -248,7 +362,7 @@ function Checkout() {
               </Card>
             </div>
 
-            {/* Résumé commande */}
+            {/* Résumé commande + paiement */}
             <div>
               <Card className="sticky top-20">
                 <CardHeader>
@@ -256,59 +370,94 @@ function Checkout() {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="flex items-start space-x-3">
-                    <ShoppingCart className="h-5 w-5 text-primary mt-0.5" />
+                    <ShoppingCart className="mt-0.5 h-5 w-5 text-primary" />
                     <div className="flex-1">
                       <p className="font-medium">{selectedOffer.name}</p>
                       <p className="text-sm text-muted-foreground">
-                        {selectedOffer.type === 'maintenance' ? 'Abonnement mensuel' : 'Paiement unique'}
+                        {selectedOffer.type === 'pack'
+                          ? 'Abonnement mensuel'
+                          : 'Paiement unique'}
                       </p>
                     </div>
                   </div>
 
                   <Separator />
 
-                  <div className="space-y-2">
-                    <div className="flex justify-between text-sm">
-                      <span>Sous-total</span>
-                      <span>{formatPrice(selectedOffer.price)}</span>
-                    </div>
-                    <div className="flex justify-between text-sm">
-                      <span>TVA (20%)</span>
-                      <span>{formatPrice(selectedOffer.price * 0.2)}</span>
-                    </div>
-                  </div>
+                  <div className="space-y-1 text-sm">
+  <div className="flex justify-between">
+    <span>Total</span>
+    <span className="font-medium">
+      {formatPrice(totalAmount)}
+    </span>
+  </div>
+
+  {isPack ? (
+    <div className="flex justify-between">
+      <span>Montant à payer maintenant</span>
+      <span className="font-semibold text-primary">
+        {formatPrice(depositAmount)}
+      </span>
+    </div>
+  ) : (
+    <>
+      <div className="flex justify-between">
+        <span>Acompte (40 %)</span>
+        <span className="font-semibold text-primary">
+          {formatPrice(depositAmount)}
+        </span>
+      </div>
+      <div className="flex justify-between text-xs text-muted-foreground">
+        <span>Solde restant (60 %)</span>
+        <span>{formatPrice(remainingAmount)}</span>
+      </div>
+    </>
+  )}
+</div>
+
 
                   <Separator />
 
-                  <div className="flex justify-between text-lg font-bold">
-                    <span>Total</span>
-                    <span>{formatPrice(selectedOffer.price * 1.2)}</span>
-                  </div>
-
-                  <Separator />
-
-                  {/* PayPal Buttons */}
-                  {formData.description && formData.deadline ? (
-                    <PayPalScriptProvider
-                      options={{
-                        'client-id': PAYPAL_CLIENT_ID,
-                        currency: 'EUR',
-                        intent: 'capture',
-                      }}
-                    >
-                      <PayPalButtons
-                        style={{
-                          layout: 'vertical',
-                          color: 'gold',
-                          shape: 'rect',
-                          label: 'paypal',
+                  <div className="space-y-3">
+                    <Label>Moyen de paiement</Label>
+                    <div className="rounded-md border p-3">
+                      <CardElement
+                        options={{
+                          style: {
+                            base: {
+                              fontSize: '16px',
+                              color: '#111827',
+                              '::placeholder': {
+                                color: '#9CA3AF',
+                              },
+                            },
+                            invalid: {
+                              color: '#EF4444',
+                            },
+                          },
                         }}
-                        createOrder={createOrder}
-                        onApprove={onApprove}
-                        onError={onError}
-                        disabled={loading}
                       />
-                    </PayPalScriptProvider>
+                    </div>
+                  </div>
+
+                  {formData.description && formData.deadline ? (
+                    <Button
+                      onClick={handlePayNow}
+                      disabled={loading || !stripe || !elements}
+                      className="w-full bg-green-500 text-white hover:bg-primary/90"
+                      size="lg"
+                    >
+                     {loading ? (
+  <>
+    <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
+    Traitement.
+  </>
+) : isPack ? (
+  <>Payer {formatPrice(depositAmount)}</>
+) : (
+  <>Payer l&apos;acompte de {formatPrice(depositAmount)}</>
+)}
+
+                    </Button>
                   ) : (
                     <Alert>
                       <AlertDescription>
@@ -317,9 +466,12 @@ function Checkout() {
                     </Alert>
                   )}
 
-                  <p className="text-xs text-center text-muted-foreground">
-                    Paiement sécurisé par PayPal
-                  </p>
+                  <p className="text-center text-xs text-muted-foreground">
+  {isPack
+    ? 'Paiement sécurisé par carte bancaire (Stripe). Ce pack est réglé en une seule fois.'
+    : 'Paiement sécurisé par carte bancaire (Stripe). Le solde de 60 % sera à régler une fois le projet terminé, depuis votre espace client.'}
+</p>
+
                 </CardContent>
               </Card>
             </div>
@@ -327,6 +479,17 @@ function Checkout() {
         </div>
       </div>
     </div>
+  )
+}
+
+// --------------------
+// Wrapper Stripe
+// --------------------
+function Checkout() {
+  return (
+    <Elements stripe={stripePromise}>
+      <CheckoutInner />
+    </Elements>
   )
 }
 

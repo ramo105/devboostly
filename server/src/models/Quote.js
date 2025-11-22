@@ -28,10 +28,11 @@ const quoteSchema = new mongoose.Schema({
   deadline: { type: String, required: [true, 'Le délai est requis'] },
   description: { type: String, required: [true, 'La description est requise'] },
   status: {
-    type: String,
-    enum: ['pending', 'reviewed', 'sent', 'accepted', 'rejected'],
-    default: 'pending'
-  },
+  type: String,
+  enum: ['pending', 'reviewed', 'sent', 'accepted', 'completed', 'cancelled', 'rejected'],
+  default: 'pending',
+},
+
   adminNotes: { type: String, default: null },
   proposedAmount: { type: Number, default: null },
   validUntil: { type: Date, default: null },
@@ -41,24 +42,55 @@ const quoteSchema = new mongoose.Schema({
   reviewedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null } // ID de l'admin qui a révisé
 }, { timestamps: true })
 
-// ✅ Générer le numéro AVANT la validation (sinon "required" casse)
+// ✅ Générer un numéro de devis unique avant la validation
 quoteSchema.pre('validate', async function (next) {
   try {
+    // Si le numéro existe déjà (update, etc.), on ne touche pas
     if (this.quoteNumber) return next()
 
     const date = new Date()
     const year = date.getFullYear()
+    const prefix = `DEVIS-${year}-`
 
-    // Simple incrément basé sur le count (OK pour un usage basique)
-    const count = await mongoose.model('Quote').countDocuments()
-    this.quoteNumber = `DEVIS-${year}-${String(count + 1).padStart(5, '0')}`
+    const QuoteModel = mongoose.model('Quote')
 
-    return next()
+    // On compte uniquement les devis de l'année courante (pour le départ)
+    const existingCount = await QuoteModel.countDocuments({
+      quoteNumber: { $regex: `^${prefix}` },
+    })
+
+    let counter = existingCount
+    let candidate = null
+    let attempts = 0
+    const MAX_ATTEMPTS = 50 // largement suffisant pour ton usage
+
+    while (attempts < MAX_ATTEMPTS) {
+      counter += 1
+      candidate = `${prefix}${String(counter).padStart(5, '0')}`
+
+      // On vérifie que ce numéro n'existe pas déjà vraiment en base
+      const exists = await QuoteModel.exists({ quoteNumber: candidate })
+
+      if (!exists) {
+        this.quoteNumber = candidate
+        return next()
+      }
+
+      attempts += 1
+    }
+
+    // Si on sort de la boucle, il y a un vrai problème de cohérence
+    return next(
+      new Error(
+        "Impossible de générer un numéro de devis unique (trop de collisions)."
+      )
+    )
   } catch (error) {
     console.error('Erreur lors de la génération du quoteNumber', error)
     next(error)
   }
 })
+
 
 const Quote = mongoose.model('Quote', quoteSchema)
 

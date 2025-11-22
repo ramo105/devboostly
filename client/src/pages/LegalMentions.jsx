@@ -19,7 +19,7 @@ function LegalMentions() {
                   <strong>Raison sociale :</strong> {COMPANY_INFO.name}
                 </p>
                 <p>
-                  <strong>Adresse :</strong> {COMPANY_INFO.address}
+                  <strong>Adresse : </strong> Les Mureaux ,France 
                 </p>
                 <p>
                   <strong>Email :</strong>{' '}
@@ -42,7 +42,7 @@ function LegalMentions() {
                 <CardTitle>Directeur de la publication</CardTitle>
               </CardHeader>
               <CardContent>
-                <p>Le directeur de la publication du site est [Nom du directeur].</p>
+                <p>Le directeur de la publication du site est EL ALAOUY Wessam.</p>
               </CardContent>
             </Card>
 
@@ -52,15 +52,15 @@ function LegalMentions() {
                 <CardTitle>Hébergement</CardTitle>
               </CardHeader>
               <CardContent className="space-y-2">
-                <p>Le site est hébergé par :</p>
+                <p>Le site est hébergé par IONOS:</p>
                 <p>
-                  <strong>Nom de l'hébergeur :</strong> [Nom de l'hébergeur]
+                  <strong>Nom de l'hébergeur :</strong> Groupe IONOS SE
                 </p>
                 <p>
-                  <strong>Adresse :</strong> [Adresse de l'hébergeur]
+                  <strong>Adresse :</strong> [FR-DC]
                 </p>
                 <p>
-                  <strong>Site web :</strong> [Site de l'hébergeur]
+                  <strong>Site web :</strong> [IONOS Website]
                 </p>
               </CardContent>
             </Card>

@@ -22,7 +22,9 @@ export const QUOTE_STATUS = {
   REVIEWED: 'reviewed',
   SENT: 'sent',
   ACCEPTED: 'accepted',
-  REJECTED: 'rejected'
+  COMPLETED: 'completed',  
+  CANCELLED: 'cancelled',  
+  REJECTED: 'rejected',
 }
 
 // Statuts de facture

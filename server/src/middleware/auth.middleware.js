@@ -20,7 +20,24 @@ export const protect = async (req, res, next) => {
     }
 
     // Vérifier le token
-    const decoded = jwt.verify(token, process.env.JWT_SECRET)
+    let decoded
+    try {
+      decoded = jwt.verify(token, process.env.JWT_SECRET)
+    } catch (jwtError) {
+      // Token expiré ou invalide
+      if (jwtError.name === 'TokenExpiredError') {
+        return res.status(401).json({
+          success: false,
+          message: 'Session expirée, veuillez vous reconnecter',
+          code: 'TOKEN_EXPIRED'
+        })
+      }
+      return res.status(401).json({
+        success: false,
+        message: 'Token invalide',
+        code: 'TOKEN_INVALID'
+      })
+    }
 
     // Récupérer l'utilisateur
     req.user = await User.findById(decoded.id).select('-password')
@@ -28,7 +45,8 @@ export const protect = async (req, res, next) => {
     if (!req.user) {
       return res.status(401).json({
         success: false,
-        message: 'Utilisateur non trouvé'
+        message: 'Utilisateur non trouvé',
+        code: 'USER_NOT_FOUND'
       })
     }
 
@@ -36,7 +54,8 @@ export const protect = async (req, res, next) => {
     if (!req.user.isActive) {
       return res.status(401).json({
         success: false,
-        message: 'Compte désactivé'
+        message: 'Compte désactivé',
+        code: 'ACCOUNT_DISABLED'
       })
     }
 
@@ -45,7 +64,8 @@ export const protect = async (req, res, next) => {
     console.error('Erreur auth middleware:', error)
     return res.status(401).json({
       success: false,
-      message: 'Non autorisé, token invalide'
+      message: 'Erreur d\'authentification',
+      code: 'AUTH_ERROR'
     })
   }
 }
@@ -57,7 +77,33 @@ export const admin = (req, res, next) => {
   } else {
     res.status(403).json({
       success: false,
-      message: 'Accès refusé - Administrateur requis'
+      message: 'Accès refusé - Administrateur requis',
+      code: 'ADMIN_REQUIRED'
     })
+  }
+}
+
+// NOUVEAU: Middleware optionnel (ne bloque pas si pas de token)
+export const optionalAuth = async (req, res, next) => {
+  try {
+    let token
+
+    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+      token = req.headers.authorization.split(' ')[1]
+    }
+
+    if (token) {
+      try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET)
+        req.user = await User.findById(decoded.id).select('-password')
+      } catch (error) {
+        // Ignore l'erreur, l'utilisateur ne sera juste pas connecté
+        req.user = null
+      }
+    }
+
+    next()
+  } catch (error) {
+    next()
   }
 }

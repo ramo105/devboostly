@@ -4,57 +4,115 @@ import emailService from '../services/emailService.js'
 import pdfService from '../services/pdfService.js'
 import { logger } from '../utils/logger.js'
 import { QUOTE_STATUS } from '../utils/constants.js'
-
+import Order from '../models/Order.js'
+import Stripe from 'stripe'
 // @desc    Créer demande de devis
 // @route   POST /api/quotes
 // @access  Public
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
 export const createQuote = async (req, res, next) => {
   try {
     const { name, email, phone, siteType, budget, deadline, description } = req.body || {}
 
-    // Validation
+    // --- Validation simple ---
     const required = { name, email, siteType, budget, deadline, description }
     for (const [k, v] of Object.entries(required)) {
       if (!v || String(v).trim() === '') {
-        return res.status(400).json({ success: false, message: `Le champ "${k}" est requis.` })
+        return res
+          .status(400)
+          .json({ success: false, message: `Le champ "${k}" est requis.` })
       }
     }
+
     const emailOk = /^\S+@\S+\.\S+$/.test(String(email))
-    if (!emailOk) return res.status(400).json({ success: false, message: 'Email invalide.' })
-    if (String(description).trim().length < 10) {
-      return res.status(400).json({ success: false, message: 'La description doit contenir au moins 10 caractères.' })
+    if (!emailOk) {
+      return res
+        .status(400)
+        .json({ success: false, message: 'Email invalide.' })
     }
 
-    // Récupérer l'ID de l'utilisateur de manière sécurisée
+    if (String(description).trim().length < 10) {
+      return res.status(400).json({
+        success: false,
+        message: 'La description doit contenir au moins 10 caractères.',
+      })
+    }
+
+    // --- Données de base du devis ---
     const userId = req.user ? (req.user.id || req.user._id) : null
 
-    const newQuote = new Quote({
+    const baseData = {
       userId,
       name,
-      email: email.toLowerCase(), // IMPORTANT : S'assurer que l'email est en minuscules
+      email: email.toLowerCase(),
       phone,
       siteType,
       budget,
       deadline,
       description,
-      status: QUOTE_STATUS.PENDING
-    })
-
-    const savedQuote = await newQuote.save()
-    
-    // Appels au service d'email sécurisés
-    try {
-        await emailService.sendQuoteConfirmation(savedQuote)
-        await emailService.sendNewQuoteNotification(savedQuote)
-    } catch(emailError) {
-        logger.error(`Erreur lors de l'envoi des emails de devis pour ${savedQuote._id}: ${emailError.message}`)
+      status: QUOTE_STATUS.PENDING,
     }
 
-    res.status(201).json({ success: true, message: 'Demande de devis créée', data: savedQuote })
+    // --- Tentatives de sauvegarde en cas de conflit sur quoteNumber ---
+    const MAX_ATTEMPTS = 5
+    let savedQuote = null
+    let lastError = null
+
+    for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+      try {
+        // ⚠️ Très important : NOUVELLE instance à chaque tentative
+        const quote = new Quote(baseData)
+        savedQuote = await quote.save()
+        lastError = null
+        break
+      } catch (err) {
+        // Tout E11000 vient du quoteNumber (c'est le seul unique) :contentReference[oaicite:4]{index=4}
+        if (err?.code === 11000) {
+          console.warn(
+            `Conflit quoteNumber (tentative ${attempt}) : ${
+              err?.message || ''
+            }`
+          )
+          lastError = err
+          // on réessaye avec une nouvelle instance → nouveau pre('validate') → nouveau numéro
+          continue
+        }
+
+        // autre erreur : on arrête
+        lastError = err
+        break
+      }
+    }
+
+    if (!savedQuote) {
+      // Ici, soit on a eu que des E11000, soit une autre erreur
+      console.error('Impossible de créer le devis après plusieurs tentatives', lastError)
+      return res.status(500).json({
+        success: false,
+        message:
+          "Impossible de générer un numéro de devis unique après plusieurs tentatives.",
+      })
+    }
+
+    // --- Emails (meilleure-effort, ne bloque pas la création) ---
+    try {
+      await emailService.sendQuoteConfirmation(savedQuote)
+      await emailService.sendNewQuoteNotification(savedQuote)
+    } catch (emailError) {
+      logger.error(
+        `Erreur lors de l'envoi des emails de devis pour ${savedQuote._id}: ${emailError.message}`
+      )
+    }
+
+    return res
+      .status(201)
+      .json({ success: true, message: 'Demande de devis créée', data: savedQuote })
   } catch (error) {
     next(error)
   }
 }
+
+
 
 // @desc    Get quotes for current user
 // @route   GET /api/quotes/user
@@ -131,6 +189,289 @@ export const getQuoteById = async (req, res, next) => {
     next(error)
   }
 }
+
+
+// @desc    Initialiser le paiement de l'acompte d'un devis (Stripe PaymentIntent)
+// @route   POST /api/quotes/:id/init-payment
+// @access  Private (user connecté)
+export const initQuoteDepositPayment = async (req, res, next) => {
+  try {
+    const quote = await Quote.findById(req.params.id)
+
+    if (!quote) {
+      return res
+        .status(404)
+        .json({ success: false, message: 'Devis non trouvé' })
+    }
+
+    const isOwner = quote.userId && String(quote.userId) === String(req.user.id)
+    const isAdmin = req.user.role === 'admin'
+    const isSameEmail =
+      quote.email &&
+      req.user.email &&
+      quote.email.toLowerCase() === req.user.email.toLowerCase()
+
+    if (!isOwner && !isAdmin && !isSameEmail) {
+      return res
+        .status(403)
+        .json({ success: false, message: 'Non autorisé à payer ce devis' })
+    }
+
+    if (!quote.proposedAmount) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "Ce devis n'a pas encore de montant proposé. Merci d'attendre l'envoi de l'offre par l'administrateur.",
+      })
+    }
+
+    // On autorise le paiement seulement si le devis a bien été envoyé/revu
+    if (quote.status !== 'sent' && quote.status !== 'reviewed') {
+      return res.status(400).json({
+        success: false,
+        message: "Ce devis n'est pas dans un état permettant le paiement.",
+      })
+    }
+
+    // Vérifier la validité
+    if (quote.validUntil && quote.validUntil < new Date()) {
+      return res.status(400).json({
+        success: false,
+        message: 'La date de validité de ce devis est dépassée.',
+      })
+    }
+
+    const totalAmount = Number(quote.proposedAmount)
+    if (!Number.isFinite(totalAmount) || totalAmount <= 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'Montant de devis invalide.',
+      })
+    }
+
+    const depositPercentage = 40
+    const depositAmount = Math.round((totalAmount * depositPercentage) / 100)
+    const amountInCents = depositAmount * 100
+
+    if (!amountInCents || amountInCents <= 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Le montant d'acompte calculé est invalide.",
+      })
+    }
+
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: amountInCents,
+      currency: 'eur',
+      metadata: {
+        quoteId: quote._id.toString(),
+        userId: req.user.id.toString(),
+        type: 'quote_deposit',
+      },
+    })
+
+    return res.status(200).json({
+      success: true,
+      clientSecret: paymentIntent.client_secret,
+      amount: depositAmount,
+      currency: paymentIntent.currency,
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
+// @desc    Accepter un devis côté client APRÈS paiement et créer la commande
+// @route   POST /api/quotes/:id/accept
+// @access  Private (user connecté)
+export const acceptQuoteAndCreateOrder = async (req, res, next) => {
+  try {
+    const quote = await Quote.findById(req.params.id)
+
+    if (!quote) {
+      return res
+        .status(404)
+        .json({ success: false, message: 'Devis non trouvé' })
+    }
+
+    const isOwner = quote.userId && String(quote.userId) === String(req.user.id)
+    const isAdmin = req.user.role === 'admin'
+    const isSameEmail =
+      quote.email &&
+      req.user.email &&
+      quote.email.toLowerCase() === req.user.email.toLowerCase()
+
+    if (!isOwner && !isAdmin && !isSameEmail) {
+      return res
+        .status(403)
+        .json({ success: false, message: 'Non autorisé à accepter ce devis' })
+    }
+
+    if (!quote.proposedAmount) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "Ce devis n'a pas encore de montant proposé. Merci d'attendre l'envoi de l'offre par l'administrateur.",
+      })
+    }
+
+    // On n'autorise l'acceptation que si le devis a été envoyé/revu
+    if (quote.status !== 'sent' && quote.status !== 'reviewed') {
+      return res.status(400).json({
+        success: false,
+        message: "Ce devis n'est pas dans un état permettant l'acceptation.",
+      })
+    }
+
+    // Vérifier la validité
+    if (quote.validUntil && quote.validUntil < new Date()) {
+      return res.status(400).json({
+        success: false,
+        message: 'La date de validité de ce devis est dépassée.',
+      })
+    }
+
+    // ⚠️ On attend le paymentIntentId du front (paiement déjà effectué)
+    const { paymentIntentId } = req.body || {}
+    if (!paymentIntentId) {
+      return res.status(400).json({
+        success: false,
+        message:
+          'paymentIntentId manquant. Le devis ne peut être accepté qu’après un paiement réussi.',
+      })
+    }
+
+    let paymentIntent
+    try {
+      paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId)
+    } catch (err) {
+      return res.status(400).json({
+        success: false,
+        message: 'Paiement introuvable ou invalide.',
+      })
+    }
+
+    if (!paymentIntent || paymentIntent.status !== 'succeeded') {
+      return res.status(400).json({
+        success: false,
+        message: 'Paiement non effectué ou incomplet.',
+      })
+    }
+
+    const totalAmount = Number(quote.proposedAmount)
+    const depositPercentage = 40
+    const depositAmount = Math.round((totalAmount * depositPercentage) / 100)
+    const balanceAmount = Math.max(totalAmount - depositAmount, 0)
+
+    // Sécurité : vérifier que le montant reçu couvre bien l'acompte
+    const received =
+      (paymentIntent.amount_received ?? paymentIntent.amount ?? 0) / 100
+    if (received + 0.01 < depositAmount) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "Le montant payé est insuffisant pour couvrir l'acompte de 40 %.",
+      })
+    }
+
+    // Mise à jour du devis
+    if (!quote.userId) {
+      quote.userId = req.user.id
+    }
+    quote.status = 'accepted'
+    await quote.save()
+
+    // ==== Infos de facturation pour la commande ====
+    let billingInfo = null
+    const userId = quote.userId || req.user.id
+
+    if (userId) {
+      const user = await User.findById(userId)
+
+      if (user) {
+        billingInfo = {
+          firstName: user.firstName || '',
+          lastName: user.lastName || '',
+          email: user.email || '',
+        }
+
+        if (user.address) {
+          billingInfo.address = {
+            street: user.address.street || user.address.line1 || '',
+            postalCode: user.address.postalCode || user.address.zip || '',
+            city: user.address.city || '',
+            country: user.address.country || '',
+          }
+        }
+      }
+    }
+
+    // fallback si pas d'utilisateur complet -> on utilise les infos du devis
+    if (!billingInfo) {
+      billingInfo = {
+        firstName: quote.name || '',
+        lastName: '',
+        email: quote.email || '',
+      }
+    }
+    // ===============================================
+
+    // Création de la commande liée
+    const order = await Order.create({
+      userId: quote.userId,
+      amount: totalAmount,
+      status: 'pending',
+      // 🔴 AVANT: 'unpaid'
+      // ✅ MAINTENANT: acompte déjà payé, reste le solde
+      paymentStatus: balanceAmount > 0 ? 'deposit_paid' : 'paid',
+      billingInfo,
+      projectDetails: {
+        source: 'quote',
+        quoteId: quote._id,
+        quoteNumber: quote.quoteNumber,
+        name: quote.name,
+        email: quote.email,
+        phone: quote.phone,
+        siteType: quote.siteType,
+        description: quote.description,
+        initialBudget: quote.budget,
+        deadline: quote.deadline,
+        finalAmount: totalAmount,
+      },
+      // 🔴 AVANT: paid: false
+      // ✅ MAINTENANT: acompte payé + date + PI Stripe
+      deposit: {
+        percentage: depositPercentage,
+        amount: depositAmount,
+        paid: true,
+        paidAt: new Date(),
+        stripePaymentIntentId: paymentIntent.id,
+      },
+      balance: {
+        amount: balanceAmount,
+        paid: balanceAmount === 0,
+      },
+      metadata: {
+        originalItemType: 'Devis',
+        originalItemName: quote.siteType || 'Projet sur-mesure',
+      },
+    })
+
+    return res.status(200).json({
+      success: true,
+      message: 'Devis accepté, acompte payé et commande créée.',
+      data: {
+        quote,
+        order,
+      },
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
+
+
 
 // @desc    Mettre à jour le statut du devis (Admin)
 // @route   PUT /api/quotes/:id/status

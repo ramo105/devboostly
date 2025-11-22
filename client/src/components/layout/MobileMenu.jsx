@@ -27,7 +27,7 @@ function MobileMenu({ isOpen, onClose }) {
             key={item.path}
             to={item.path}
             onClick={onClose}
-            className="text-lg font-medium hover:text-primary"
+            className="text-lg font-small hover:text-primary"
           >
             {item.name}
           </Link>

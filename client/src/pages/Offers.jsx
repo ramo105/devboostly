@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+﻿import { Link } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -17,11 +17,72 @@ import {
   TrendingUp
 } from 'lucide-react'
 import { useAuth } from '@/hooks/useAuth'
-import { useEffect } from 'react'
-
+import { useEffect,useState } from 'react'
+import { useNavigate } from 'react-router-dom' 
+import { offerService } from '@/services/offerService' 
+import { orderService } from '@/services/orderService'
+import { toast } from 'react-hot-toast'
 function Offers() {
-  const { isAuthenticated } = useAuth()
+  const { isAuthenticated, user, loading: authLoading } = useAuth()
+  const navigate = useNavigate()
 
+  const [loading, setLoading] = useState(true)
+  const [offers, setOffers] = useState([]) 
+  const [packs, setPacks] = useState([]) 
+  const [error, setError] = useState(null)
+  const [showLoginModal, setShowLoginModal] = useState(false)
+  // REMPLACER la fonction handleOrder (ligne ~34)
+const handleOrder = async (offer, itemType) => {
+  if (authLoading) return
+  
+  if (!isAuthenticated) {
+     setShowLoginModal(true)
+    return
+  }
+
+  try {
+    // Créer un objet temporaire avec _id (simuler une vraie offre de l'API)
+    const itemForBackend = {
+      _id: `temp_${offer.id}`, // ID temporaire
+      name: offer.name,
+      price: offer.price,
+      description: offer.description,
+      features: offer.features
+    }
+
+    // Navigation vers checkout avec données sérialisables
+    navigate('/checkout', { 
+  state: { 
+    itemId: `temp_${offer.id}`,
+    itemType: itemType,
+    itemName: offer.name,
+    itemPrice: offer.price,
+    itemDescription: offer.description || ''
+  } 
+})
+
+    
+  } catch (err) {
+    console.error('Erreur:', err)
+    toast.error('Erreur lors de la navigation')
+  }
+}
+  // 3. Fonction de chargement des données (à intégrer dans votre useEffect)
+  const fetchOffersAndPacks = async () => {
+    try {
+      const offerResponse = await offerService.getAllOffers()
+      setOffers(offerResponse.data) // Assurez-vous que l'API renvoie bien { data: [...] }
+
+      const packResponse = await offerService.getMaintenancePacks()
+      setPacks(packResponse.data) // Assurez-vous que l'API renvoie bien { data: [...] }
+      
+    } catch (err) {
+      console.error(err)
+      setError("Erreur lors du chargement des offres et packs.")
+    } finally {
+      setLoading(false)
+    }
+  }
   // ✨ Hook pour les animations au scroll
   useEffect(() => {
     const observerOptions = {
@@ -42,7 +103,7 @@ function Offers() {
     )
 
     animatedElements.forEach((el) => observer.observe(el))
-
+    fetchOffersAndPacks()
     return () => {
       animatedElements.forEach((el) => observer.unobserve(el))
     }
@@ -110,7 +171,7 @@ function Offers() {
       id: 1,
       name: 'Pack Basique',
       icon: Server,
-      price: 49,
+      price: 99,// dans celui là
       popular: false,
       description: 'L\'essentiel pour votre site',
       features: [
@@ -122,11 +183,12 @@ function Offers() {
       ],
       color: 'from-green-500 to-emerald-600'
     },
+    // c est ici pour changer le prix pour sa valeur
     {
       id: 2,
       name: 'Pack Standard',
       icon: Shield,
-      price: 79,
+      price: 149,
       popular: true,
       description: 'Sécurité et tranquillité',
       features: [
@@ -143,7 +205,7 @@ function Offers() {
       id: 3,
       name: 'Pack Premium',
       icon: Zap,
-      price: 129,
+      price: 349,
       popular: false,
       description: 'Service VIP complet',
       features: [
@@ -242,7 +304,7 @@ function Offers() {
       </section>
 
       {/* Site Offers Section */}
-      <section className="py-20 bg-gradient-to-br from-muted/30 to-muted/10">
+      <section className="py-20 bg-gradient-to-br from-muted/30 to-muted/10 justify-center flex">
         <div className="container">
           <div className="mx-auto max-w-7xl">
             {/* Section Header */}
@@ -315,7 +377,7 @@ function Offers() {
                         <span className="text-4xl font-bold text-[#3ae5ae]">
                           {offer.price}€
                         </span>
-                        <span className="text-sm text-muted-foreground">TTC</span>
+                        
                       </div>
                     </CardHeader>
 
@@ -335,19 +397,19 @@ function Offers() {
                     </CardContent>
 
                     <CardFooter className="pt-0">
-                      <Link to={isAuthenticated ? '/checkout' : '/inscription'} className="w-full" state={{ offer }}>
+                      
                         <Button 
                           className={`w-full group/btn ${
                             offer.popular 
                               ? 'bg-gradient-to-r from-[#3ae5ae] to-emerald-500 text-white hover:opacity-90' 
                               : 'border-2 border-[#3ae5ae] text-[#3ae5ae] bg-transparent hover:bg-[#3ae5ae] hover:text-white'
                           }`}
-                          size="lg"
+                          size="lg" disabled={loading || authLoading} onClick={() => handleOrder(offer, 'offer')}
                         >
                           Commander maintenant
                           <ArrowRight className="ml-2 h-4 w-4 group-hover/btn:translate-x-1 transition-transform" />
                         </Button>
-                      </Link>
+                      
                     </CardFooter>
                   </Card>
                 )
@@ -358,7 +420,7 @@ function Offers() {
       </section>
 
       {/* Maintenance Packs Section */}
-      <section className="py-20 bg-gradient-to-br from-[#0A1128]/5 via-purple-50/30 to-blue-50/30 dark:from-[#0A1128] dark:via-[#1a1f3a] dark:to-[#0A1128]">
+      <section className="py-20 bg-gradient-to-br from-[#0A1128]/5 via-purple-50/30 to-blue-50/30 dark:from-[#0A1128] dark:via-[#1a1f3a] dark:to-[#0A1128] flex justify-center">
         <div className="container">
           <div className="mx-auto max-w-7xl">
             {/* Section Header */}
@@ -374,7 +436,7 @@ function Offers() {
               <h2 className="text-3xl md:text-4xl font-bold text-[#0A1128] dark:text-white mb-4">
                 Packs{' '}
                 <span className="bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
-                  Mensuels
+                  Annuels
                 </span>
               </h2>
               <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
@@ -420,7 +482,7 @@ function Offers() {
                         <span className="text-4xl font-bold text-[#3ae5ae]">
                           {pack.price}€
                         </span>
-                        <span className="text-sm text-muted-foreground">/ mois</span>
+                        <span className="text-sm text-muted-foreground">/ an</span>
                       </div>
                     </CardHeader>
 
@@ -447,7 +509,7 @@ function Offers() {
                               ? 'bg-gradient-to-r from-[#3ae5ae] to-emerald-500 text-white hover:opacity-90' 
                               : 'border-2 border-[#3ae5ae] text-[#3ae5ae] bg-transparent hover:bg-[#3ae5ae] hover:text-white'
                           }`}
-                          size="lg"
+                          size="lg"    disabled={loading || authLoading}  onClick={() => handleOrder(pack, 'pack')}
                         >
                           Souscrire maintenant
                           <ArrowRight className="ml-2 h-4 w-4 group-hover/btn:translate-x-1 transition-transform" />
@@ -573,6 +635,31 @@ function Offers() {
               </CardContent>
             </Card>
           </div>
+          {showLoginModal && (
+  <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50 backdrop-blur-sm">
+    <div className="bg-white dark:bg-slate-900 rounded-xl shadow-2xl w-full max-w-md mx-4 p-6">
+      <h2 className="text-xl font-semibold mb-2">Connexion requise</h2>
+      <p className="text-sm text-slate-600 dark:text-slate-300 mb-6">
+        Veuillez vous connecter à votre compte pour commander.
+      </p>
+      <div className="flex gap-3 justify-end">
+        <button
+          onClick={() => setShowLoginModal(false)}
+          className="px-4 py-2 text-sm rounded-md border border-slate-200 dark:border-slate-700"
+        >
+          Fermer
+        </button>
+        <button
+          onClick={() => navigate('/connexion')}
+          className="px-4 py-2 text-sm rounded-md bg-blue-600 text-white hover:bg-blue-700"
+        >
+          Se connecter
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
         </div>
       </section>
 

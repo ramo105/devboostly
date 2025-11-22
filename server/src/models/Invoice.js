@@ -3,7 +3,6 @@ import mongoose from 'mongoose';
 const invoiceSchema = new mongoose.Schema({
   invoiceNumber: {
     type: String,
-    required: true,
     unique: true
   },
   orderId: {
@@ -33,7 +32,7 @@ const invoiceSchema = new mongoose.Schema({
   status: {
     type: String,
     enum: ['paid', 'pending', 'overdue'],
-    default: 'paid'
+    default: 'pending'
   },
   dueDate: {
     type: Date
@@ -71,20 +70,37 @@ const invoiceSchema = new mongoose.Schema({
 });
 
 // Générer le numéro de facture automatiquement
+// Générer le numéro de facture automatiquement : INV-2001, INV-2002, ...
 invoiceSchema.pre('save', async function(next) {
   if (!this.invoiceNumber) {
-    const date = new Date();
-    const year = date.getFullYear();
-    const count = await mongoose.model('Invoice').countDocuments();
-    this.invoiceNumber = `INV-${year}-${String(count + 1).padStart(5, '0')}`;
+    const InvoiceModel = mongoose.model('Invoice');
+
+    const lastInvoice = await InvoiceModel.findOne({})
+      .sort({ createdAt: -1 })
+      .select('invoiceNumber')
+      .lean();
+
+    let lastSeq = 2000;
+
+    if (lastInvoice?.invoiceNumber) {
+      // Nouveau format : INV-XXXX
+      const simpleMatch = lastInvoice.invoiceNumber.match(/^INV-(\d{4,})$/);
+      if (simpleMatch) {
+        lastSeq = parseInt(simpleMatch[1], 10);
+      }
+      // Ancien format éventuel : ignoré → on repart à 2001
+    }
+
+    const nextSeq = lastSeq + 1;
+    this.invoiceNumber = `INV-${nextSeq}`;
   }
   next();
 });
 
+
 // Index
 invoiceSchema.index({ userId: 1 });
 invoiceSchema.index({ orderId: 1 });
-invoiceSchema.index({ invoiceNumber: 1 });
 invoiceSchema.index({ status: 1 });
 
 const Invoice = mongoose.model('Invoice', invoiceSchema);

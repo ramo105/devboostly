@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
+import backgroundimage1  from "./assets/site.png"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { 
   ArrowRight, 
@@ -56,7 +57,7 @@ function Services() {
       title: 'Création de sites web',
       subtitle: 'Sites professionnels sur mesure',
       description: 'Conception et développement de sites web modernes, performants et parfaitement adaptés à votre identité de marque. Nous créons des expériences utilisateur exceptionnelles qui convertissent vos visiteurs en clients.',
-      image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&h=500&fit=crop',
+      image: backgroundimage1 ,
       features: [
         { icon: Code, text: 'Design moderne et responsive sur tous les appareils' },
         { icon: Search, text: 'Optimisation SEO pour un meilleur référencement' },
@@ -172,7 +173,7 @@ function Services() {
           <div className="absolute top-1/2 left-1/3 w-64 h-64 bg-[#3ae5ae]/10 rounded-full blur-3xl animate-pulse" style={{animationDelay: '2s'}}></div>
         </div>
 
-        <div className="container relative z-10">
+        <div className="container relative z-10 justify-self-center">
           <div className="mx-auto max-w-7xl">
             <div className="grid lg:grid-cols-2 gap-12 items-center">
               {/* Left - Text Content (centré sur mobile) */}
@@ -283,7 +284,7 @@ function Services() {
       </motion.section>
 
       {/* Services Section - CENTERED */}
-      <section className="py-20">
+      <section className="py-20 justify-self-center">
         <div className="container">
           <div className="mx-auto max-w-7xl">
             <div className="space-y-20">
@@ -412,7 +413,7 @@ function Services() {
         viewport={{ once: true, amount: 0.3 }}
         transition={{ staggerChildren: 0.2 }}
       >
-        <div className="container">
+        <div className="container justify-self-center">
           <div className="mx-auto max-w-7xl">
             <motion.div
               className="text-center mb-16"

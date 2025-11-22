@@ -6,13 +6,11 @@ import {
   getQuoteById,
   updateQuoteStatus,
   generateQuotePDF,
-  deleteQuote
+  deleteQuote,
+  acceptQuoteAndCreateOrder,
+  initQuoteDepositPayment,
 } from '../controllers/quoteController.js'
 import { protect, admin } from '../middleware/auth.middleware.js'
-
-// ⚠️ On retire les validators agressifs qui renvoyaient 400 génériques
-// import { validate } from '../middleware/validation.middleware.js'
-// import { quoteValidation } from '../utils/validators.js'
 import { emailLimiter } from '../middleware/rateLimiter.middleware.js'
 
 const router = express.Router()
@@ -20,6 +18,8 @@ const router = express.Router()
 // Routes publiques/protégées
 router.post('/', emailLimiter, /*quoteValidation, validate,*/ createQuote)
 router.get('/user', protect, getUserQuotes)
+router.post('/:id/init-payment', protect, initQuoteDepositPayment)
+router.post('/:id/accept', protect, acceptQuoteAndCreateOrder)
 router.get('/:id', protect, getQuoteById)
 
 // Routes admin

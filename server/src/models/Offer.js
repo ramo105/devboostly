@@ -56,7 +56,6 @@ const offerSchema = new mongoose.Schema({
 });
 
 // Index pour la recherche
-offerSchema.index({ slug: 1 });
 offerSchema.index({ type: 1 });
 offerSchema.index({ isActive: 1 });
 

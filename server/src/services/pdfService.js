@@ -3,12 +3,11 @@ import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
 import { logger } from '../utils/logger.js'
-
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
-
 class PDFService {
   // Générer une facture PDF
+    // Générer une facture PDF
   async generateInvoice(invoice, user, order) {
     try {
       const doc = new PDFDocument({ margin: 50 })
@@ -21,53 +20,91 @@ class PDFService {
         fs.mkdirSync(dir, { recursive: true })
       }
 
-      // Pipe vers un fichier
       const writeStream = fs.createWriteStream(filePath)
       doc.pipe(writeStream)
 
-      // En-tête
+      // ====== LOGO ======
+      const logoPath = path.join(__dirname, '../uploads/react.png')
+      if (fs.existsSync(logoPath)) {
+        doc.image(logoPath, 50, 40, { width: 90 })
+      }
+
+      // ====== TITRE FACTURE ======
       doc
+        .font('Helvetica-Bold')
         .fontSize(20)
-        .text('FACTURE', 50, 50, { align: 'center' })
-        .moveDown()
+        .text('FACTURE', 0, 50, { align: 'right' })
 
-      // Informations entreprise
+      // ====== INFOS ENTREPRISE ======
+      const companyX = 50
+      const companyY = 140
+
       doc
+        .font('Helvetica-Bold')
+        .fontSize(12)
+        .text('DevBoostly', companyX, companyY)
+
+      doc
+        .font('Helvetica')
         .fontSize(10)
-        .text('Devboostly', 50, 100)
-        .text('contact@devboostly.fr', 50, 115)
-        .text('www.devboostly.fr', 50, 130)
+        .text('Nom : EL ALAOUY', companyX, companyY + 18)
+        .text('Email : devboostly@gmail.com', companyX, companyY + 33)
+        .text('Téléphone : 06 99 47 71 96', companyX, companyY + 48)
+        .text('Site : devboostly.fr', companyX, companyY + 63)
+        .text('SIRET : 933 631 459 00015', companyX, companyY + 78)
+        .text(
+          'Statut : Auto-entrepreneur — TVA non applicable (article 293 B du CGI)',
+          companyX,
+          companyY + 93,
+          { width: 260 }
+        )
 
-      // Informations client
-      doc
-        .text(`Facturé à:`, 350, 100)
-        .text(`${user.firstName} ${user.lastName}`, 350, 115)
-        .text(user.email, 350, 130)
+      // ====== INFOS CLIENT ======
+      const clientX = 350
+      const clientY = 140
 
-      // Ligne de séparation
       doc
-        .moveTo(50, 160)
-        .lineTo(550, 160)
+        .font('Helvetica-Bold')
+        .fontSize(10)
+        .text('Facturé à :', clientX, clientY)
+
+      doc
+        .font('Helvetica')
+        .text(`${user.firstName} ${user.lastName}`, clientX, clientY + 15)
+        .text(user.email || '', clientX, clientY + 30)
+
+      if (user.phone) {
+        doc.text(user.phone, clientX, clientY + 45)
+      }
+
+      // ====== SÉPARATEUR ======
+      const sepY = companyY + 120
+      doc
+        .moveTo(50, sepY)
+        .lineTo(550, sepY)
         .stroke()
 
-      // Détails facture
-      doc
-        .moveDown()
-        .fontSize(10)
-        .text(`Numéro de facture: ${invoice.invoiceNumber}`, 50, 180)
-        .text(`Date: ${new Date(invoice.createdAt).toLocaleDateString('fr-FR')}`, 50, 195)
-        .text(`Statut: ${invoice.status === 'paid' ? 'Payée' : 'En attente'}`, 50, 210)
+      // ====== DÉTAILS FACTURE ======
+const detailsY = sepY + 20
+const dateStr = new Date(invoice.createdAt).toLocaleDateString('fr-FR')
 
-      // Tableau des articles
-      const tableTop = 250
+doc
+  .font('Helvetica')
+  .fontSize(10)
+  .text(`Numéro de facture : ${invoice.invoiceNumber}`, 50, detailsY)
+  .text(`Date : ${dateStr}`, 50, detailsY + 15)
+
+// ====== TABLEAU DES ARTICLES ======
+const tableTop = detailsY + 55
+
       doc
+        .font('Helvetica-Bold')
         .fontSize(12)
         .text('Description', 50, tableTop)
         .text('Quantité', 300, tableTop)
         .text('Prix unitaire', 370, tableTop)
         .text('Total', 480, tableTop)
 
-      // Ligne de séparation
       doc
         .moveTo(50, tableTop + 20)
         .lineTo(550, tableTop + 20)
@@ -75,30 +112,41 @@ class PDFService {
 
       let yPosition = tableTop + 30
 
-      // Articles
+      const amount = typeof invoice.amount === 'number' ? invoice.amount : 0
+      const tax = typeof invoice.tax === 'number' ? invoice.tax : 0
+      const total = typeof invoice.total === 'number' ? invoice.total : amount + tax
+
       if (invoice.items && invoice.items.length > 0) {
-        invoice.items.forEach(item => {
+        invoice.items.forEach((item) => {
           doc
+            .font('Helvetica')
             .fontSize(10)
             .text(item.description, 50, yPosition)
             .text(item.quantity, 300, yPosition)
-            .text(`${item.unitPrice.toFixed(2)}€`, 370, yPosition)
-            .text(`${item.total.toFixed(2)}€`, 480, yPosition)
-          
+            .text(`${item.unitPrice.toFixed(2)} €`, 370, yPosition)
+            .text(`${item.total.toFixed(2)} €`, 480, yPosition)
+
           yPosition += 25
         })
       } else {
+        // fallback simple si pas d'items détaillés
+        const description =
+          order?.projectDetails?.siteType ||
+          order?.projectDetails?.description ||
+          'Prestation de service'
+
         doc
+          .font('Helvetica')
           .fontSize(10)
-          .text(order.projectDetails.siteType, 50, yPosition)
+          .text(description, 50, yPosition)
           .text('1', 300, yPosition)
-          .text(`${invoice.amount.toFixed(2)}€`, 370, yPosition)
-          .text(`${invoice.amount.toFixed(2)}€`, 480, yPosition)
-        
+          .text(`${amount.toFixed(2)} €`, 370, yPosition)
+          .text(`${amount.toFixed(2)} €`, 480, yPosition)
+
         yPosition += 25
       }
 
-      // Ligne de séparation
+      // Ligne sous le tableau
       doc
         .moveTo(50, yPosition + 10)
         .lineTo(550, yPosition + 10)
@@ -106,37 +154,40 @@ class PDFService {
 
       yPosition += 30
 
-      // Totaux
+      // ====== TOTAUX ======
       doc
-        .fontSize(10)
-        .text('Sous-total HT:', 370, yPosition)
-        .text(`${invoice.amount.toFixed(2)}€`, 480, yPosition)
-
-      yPosition += 20
-
-      doc
-        .text('TVA (20%):', 370, yPosition)
-        .text(`${invoice.tax.toFixed(2)}€`, 480, yPosition)
-
-      yPosition += 20
-
-      doc
-        .fontSize(12)
-        .font('Helvetica-Bold')
-        .text('Total TTC:', 370, yPosition)
-        .text(`${invoice.total.toFixed(2)}€`, 480, yPosition)
-
-      // Footer
-      doc
-        .fontSize(8)
         .font('Helvetica')
-        .text('Merci pour votre confiance !', 50, 700, { align: 'center' })
-        .text('Devboostly - Tous droits réservés', 50, 715, { align: 'center' })
+        .fontSize(10)
+        .text('Sous-total HT :', 370, yPosition)
+        .text(`${amount.toFixed(2)} €`, 480, yPosition)
+
+      yPosition += 20
+
+      doc
+        .text('TVA (0 %) :', 370, yPosition)
+        .text(`${tax.toFixed(2)} €`, 480, yPosition)
+
+      yPosition += 20
+
+      doc
+        .font('Helvetica-Bold')
+        .fontSize(12)
+        .text('Total TTC :', 370, yPosition)
+        .text(`${total.toFixed(2)} €`, 480, yPosition)
+
+      // ====== FOOTER ======
+      doc
+        .font('Helvetica')
+        .fontSize(8)
+        .text('TVA non applicable, article 293 B du CGI', 50, 700, {
+          align: 'center',
+        })
+        .text('Merci pour votre confiance !', 50, 715, { align: 'center' })
+        .text('DevBoostly - Tous droits réservés', 50, 730, { align: 'center' })
 
       // Finaliser le PDF
       doc.end()
 
-      // Attendre que le fichier soit écrit
       await new Promise((resolve, reject) => {
         writeStream.on('finish', resolve)
         writeStream.on('error', reject)
@@ -144,12 +195,12 @@ class PDFService {
 
       logger.info(`Facture PDF générée: ${fileName}`)
       return filePath
-
     } catch (error) {
       logger.error(`Erreur génération PDF: ${error.message}`)
       throw error
     }
   }
+
 
   // Générer un devis PDF
   async generateQuote(quote) {

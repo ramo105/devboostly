@@ -229,7 +229,7 @@ function About() {
       </section>
 
       {/* Notre Histoire - CENTRÉ */}
-      <section className="py-20">
+      <section className="py-20 flex justify-center">
         <div className="container">
           <div className="mx-auto max-w-7xl">
             <div className="grid gap-12 lg:grid-cols-2 items-center animate-on-scroll story-slide">
@@ -274,7 +274,7 @@ function About() {
       </section>
 
       {/* Stats - CENTRÉ */}
-      <section className="py-20 bg-gradient-to-br from-[#3ae5ae]/5 via-emerald-50/30 to-blue-50/30 dark:from-[#0A1128] dark:via-[#1a1f3a] dark:to-[#0A1128]">
+      <section className="py-20 bg-gradient-to-br from-[#3ae5ae]/5 via-emerald-50/30 to-blue-50/30 dark:from-[#0A1128] dark:via-[#1a1f3a] dark:to-[#0A1128] flex justify-center">
         <div className="container">
           <div className="mx-auto max-w-7xl">
             <div className="mb-16 text-center animate-on-scroll fade-up">
@@ -296,7 +296,7 @@ function About() {
       </section>
 
       {/* Values - CENTRÉ */}
-      <section className="py-20">
+      <section className="py-20 flex justify-center">
         <div className="container">
           <div className="mx-auto max-w-6xl">
             <div className="mb-16 text-center animate-on-scroll fade-up">
@@ -332,7 +332,7 @@ function About() {
       </section>
 
       {/* Features - CENTRÉ */}
-      <section className="py-20 bg-gradient-to-br from-muted/30 to-muted/10">
+      <section className="py-20 bg-gradient-to-br from-muted/30 to-muted/10 flex justify-center">
         <div className="container">
           <div className="mx-auto max-w-6xl">
             <div className="mb-12 text-center animate-on-scroll fade-up">

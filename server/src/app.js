@@ -7,13 +7,16 @@ import cookieParser from 'cookie-parser'
 import path from 'path'
 import { fileURLToPath } from 'url'
 
-// Middleware personnalisés
+// Middleware personnalises
 import { errorHandler, notFound } from './middleware/error.middleware.js'
 import morganMiddleware from './middleware/logger.middleware.js'
 import { generalLimiter } from './middleware/rateLimiter.middleware.js'
+import { protect } from './middleware/auth.middleware.js'
 
 // Routes
 import authRoutes from './routes/authRoutes.js'
+import { trackVisitor } from './middleware/analytics.middleware.js'
+import analyticsRoutes from './routes/analyticsRoutes.js'  
 import offerRoutes from './routes/offerRoutes.js'
 import orderRoutes from './routes/orderRoutes.js'
 import paymentRoutes from './routes/paymentRoutes.js'
@@ -23,13 +26,14 @@ import invoiceRoutes from './routes/invoiceRoutes.js'
 import contactRoutes from './routes/contactRoutes.js'
 import userRoutes from './routes/userRoutes.js'
 import adminRoutes from './routes/adminRoutes.js'
+import ticketRoutes from './routes/ticketRoutes.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
 const app = express()
 
-// Middlewares de sécurité
+// Middlewares de securite
 app.use(helmet())
 app.use(mongoSanitize())
 
@@ -41,7 +45,15 @@ const corsOptions = {
 }
 app.use(cors(corsOptions))
 
-// Body parser
+// IMPORTANT: Webhook Stripe AVANT express.json()
+// Le webhook a besoin du body brut (raw)
+app.post('/api/orders/webhook', express.raw({ type: 'application/json' }), async (req, res) => {
+  // Import dynamique du controller
+  const { stripeWebhook } = await import('./controllers/orderController.js')
+  return stripeWebhook(req, res)
+})
+
+// Body parser (APRES le webhook)
 app.use(express.json({ limit: '10mb' }))
 app.use(express.urlencoded({ extended: true, limit: '10mb' }))
 app.use(cookieParser())
@@ -51,7 +63,7 @@ app.use(compression())
 
 // Logger
 app.use(morganMiddleware)
-
+app.use(trackVisitor)                         
 // Rate limiting
 app.use('/api', generalLimiter)
 
@@ -78,6 +90,11 @@ app.use('/api/invoices', invoiceRoutes)
 app.use('/api/contact', contactRoutes)
 app.use('/api/users', userRoutes)
 app.use('/api/admin', adminRoutes)
+app.use('/api/analytics', analyticsRoutes)
+// Routes tickets
+app.use('/api/tickets', protect, ticketRoutes)
+app.use('/api/support/tickets', protect, ticketRoutes)
+app.use('/api/helpdesk/tickets', protect, ticketRoutes)
 
 // Route de test
 app.get('/api/test', (req, res) => {
@@ -87,7 +104,10 @@ app.get('/api/test', (req, res) => {
     environment: process.env.NODE_ENV
   })
 })
-
+app.get('/favicon.ico', (req, res) => {
+  // Pas d'icone a servir -> on renvoie "No Content" sans erreur
+  return res.status(204).end()
+})
 // Gestion des erreurs 404
 app.use(notFound)
 

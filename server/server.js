@@ -21,6 +21,7 @@ const folders = [
   'uploads/invoices',
   'uploads/quotes',
   'uploads/projects',
+  'uploads/support',
   'logs'
 ]
 

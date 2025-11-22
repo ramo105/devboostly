@@ -51,8 +51,6 @@ const maintenancePackSchema = new mongoose.Schema({
   timestamps: true
 });
 
-// Index
-maintenancePackSchema.index({ slug: 1 });
 maintenancePackSchema.index({ isActive: 1 });
 
 const MaintenancePack = mongoose.model('MaintenancePack', maintenancePackSchema);
